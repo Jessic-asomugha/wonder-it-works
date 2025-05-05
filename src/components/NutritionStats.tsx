@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -12,6 +11,7 @@ interface NutritionStatsProps {
     weight: number;
     diabetesType: string;
     calorieTarget: number;
+    gender?: string; // Make gender optional
   };
 }
 
@@ -19,7 +19,10 @@ export const NutritionStats = ({ userData }: NutritionStatsProps) => {
   // Mock nutritional recommendations based on user data
   const calculateNutrientRecommendations = (user: NutritionStatsProps["userData"]) => {
     // This is a simplified calculation - in a real app, this would be more sophisticated
-    const bmr = user.gender === "female" 
+    // Default to male if gender is not provided
+    const userGender = user.gender || "male";
+    
+    const bmr = userGender === "female" 
       ? 655 + (9.6 * user.weight) + (1.8 * user.height) - (4.7 * user.age)
       : 66 + (13.7 * user.weight) + (5 * user.height) - (6.8 * user.age);
       
@@ -171,9 +174,4 @@ export const NutritionStats = ({ userData }: NutritionStatsProps) => {
   );
 };
 
-// Add gender to userData type to support BMR calculation
-NutritionStats.defaultProps = {
-  userData: {
-    gender: "male" // Default value
-  }
-};
+// Remove the default props as we've made gender optional in the interface

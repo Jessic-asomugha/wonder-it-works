@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Glucose, Plus, ChartBar } from "lucide-react";
+import { Thermometer, Plus, ChartBar } from "lucide-react";
 
 import { toast } from "@/components/ui/sonner";
 
@@ -73,7 +73,7 @@ export const GlucoseMonitor = ({ diabetesType }: GlucoseMonitorProps) => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Glucose className="h-5 w-5" />
+            <Thermometer className="h-5 w-5" />
             <span>Glucose Monitoring</span>
           </CardTitle>
           <CardDescription>Track and monitor your glucose levels throughout the day</CardDescription>
