@@ -8,6 +8,21 @@ import { NutritionStats } from "@/components/NutritionStats";
 import { User } from "lucide-react";
 
 const Dashboard = () => {
+  // Mock user data for the dashboard components
+  const userData = {
+    name: "John Doe",
+    age: 42,
+    height: 175, // in cm
+    weight: 78, // in kg
+    diabetesType: "Type 2",
+    calorieTarget: 2000,
+    gender: "male",
+    budget: {
+      weekly: 150,
+      currency: "$"
+    }
+  };
+
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
@@ -30,13 +45,13 @@ const Dashboard = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-6">
-          <GlucoseMonitor />
-          <HealthTips />
+          <GlucoseMonitor diabetesType={userData.diabetesType} />
+          <HealthTips diabetesType={userData.diabetesType} />
         </div>
         
         <div className="space-y-6">
-          <MealPlanSection />
-          <NutritionStats />
+          <MealPlanSection userData={userData} />
+          <NutritionStats userData={userData} />
         </div>
       </div>
     </div>
