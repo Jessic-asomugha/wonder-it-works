@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -85,61 +86,63 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
         </CardHeader>
         
         <CardContent>
-          <TabsContent value="daily" className="space-y-4 mt-0">
-            <div className="flex justify-between items-center mb-4 px-2">
-              <div>
-                <h3 className="text-lg font-medium">Today's Plan</h3>
-                <p className="text-sm text-muted-foreground">
-                  {dailyTotalCalories} calories • Budget: {userData.budget.currency}{Math.round(userData.budget.weekly / 7)}
-                </p>
+          <Tabs value={planPeriod}>
+            <TabsContent value="daily" className="space-y-4 mt-0">
+              <div className="flex justify-between items-center mb-4 px-2">
+                <div>
+                  <h3 className="text-lg font-medium">Today's Plan</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {dailyTotalCalories} calories • Budget: {userData.budget.currency}{Math.round(userData.budget.weekly / 7)}
+                  </p>
+                </div>
+                <Button variant="outline" size="sm" className="flex gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <span>Today</span>
+                </Button>
               </div>
-              <Button variant="outline" size="sm" className="flex gap-2">
-                <Calendar className="h-4 w-4" />
-                <span>Today</span>
-              </Button>
-            </div>
-            
-            <div className="space-y-4">
-              {mockMealPlan.daily.map((meal, index) => (
-                <Card key={index} className="overflow-hidden">
-                  <div className="flex flex-col md:flex-row">
-                    <div className="md:w-1/4 bg-muted p-4 flex items-center">
-                      <div>
-                        <h4 className="font-medium">{meal.mealType}</h4>
-                        <p className="text-sm text-muted-foreground">{meal.totalCalories} calories</p>
+              
+              <div className="space-y-4">
+                {mockMealPlan.daily.map((meal, index) => (
+                  <Card key={index} className="overflow-hidden">
+                    <div className="flex flex-col md:flex-row">
+                      <div className="md:w-1/4 bg-muted p-4 flex items-center">
+                        <div>
+                          <h4 className="font-medium">{meal.mealType}</h4>
+                          <p className="text-sm text-muted-foreground">{meal.totalCalories} calories</p>
+                        </div>
+                      </div>
+                      <div className="p-4 flex-1">
+                        {meal.dishes.map((dish, dishIndex) => (
+                          <div key={dishIndex} className="mb-2 last:mb-0">
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center gap-2">
+                                <Utensils className="h-4 w-4 text-muted-foreground" />
+                                <span>{dish.name}</span>
+                              </div>
+                              <span className="text-sm text-muted-foreground">{dish.calories} cal</span>
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              Carbs: {dish.carbs}g • Protein: {dish.proteins}g • Fat: {dish.fats}g
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                    <div className="p-4 flex-1">
-                      {meal.dishes.map((dish, dishIndex) => (
-                        <div key={dishIndex} className="mb-2 last:mb-0">
-                          <div className="flex justify-between items-center">
-                            <div className="flex items-center gap-2">
-                              <Utensils className="h-4 w-4 text-muted-foreground" />
-                              <span>{dish.name}</span>
-                            </div>
-                            <span className="text-sm text-muted-foreground">{dish.calories} cal</span>
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-1">
-                            Carbs: {dish.carbs}g • Protein: {dish.proteins}g • Fat: {dish.fats}g
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="weekly" className="mt-0">
-            <div className="h-60 flex items-center justify-center border rounded-md">
-              <div className="text-center">
-                <h3 className="text-lg font-medium mb-2">Weekly Plan</h3>
-                <p className="text-muted-foreground mb-4">Generate a full week's meal plan based on your preferences.</p>
-                <Button>Generate Weekly Plan</Button>
+                  </Card>
+                ))}
               </div>
-            </div>
-          </TabsContent>
+            </TabsContent>
+            
+            <TabsContent value="weekly" className="mt-0">
+              <div className="h-60 flex items-center justify-center border rounded-md">
+                <div className="text-center">
+                  <h3 className="text-lg font-medium mb-2">Weekly Plan</h3>
+                  <p className="text-muted-foreground mb-4">Generate a full week's meal plan based on your preferences.</p>
+                  <Button>Generate Weekly Plan</Button>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
       

@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -173,5 +174,3 @@ export const NutritionStats = ({ userData }: NutritionStatsProps) => {
     </div>
   );
 };
-
-// Remove the default props as we've made gender optional in the interface
