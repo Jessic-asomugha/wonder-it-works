@@ -1,8 +1,7 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChefHat, DollarSign, ShoppingBag, LineChart, BookOpen, Brain, Target, Flask } from "lucide-react";
+import { ChefHat, DollarSign, ShoppingBag, LineChart, BookOpen, Brain, Target, Beaker } from "lucide-react";
 
 const Index = () => {
   return (
@@ -164,7 +163,7 @@ const Index = () => {
             
             <div className="flex items-start gap-4">
               <div className="bg-primary/10 p-3 rounded-full shrink-0">
-                <Flask className="h-6 w-6 text-primary" />
+                <Beaker className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">Tested with Sample Profiles</h3>
