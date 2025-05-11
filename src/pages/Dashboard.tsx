@@ -5,7 +5,14 @@ import { GlucoseMonitor } from "@/components/GlucoseMonitor";
 import { HealthTips } from "@/components/HealthTips";
 import { MealPlanSection } from "@/components/MealPlanSection";
 import { NutritionStats } from "@/components/NutritionStats";
-import { User } from "lucide-react";
+import { User, Search, Bell } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const Dashboard = () => {
   // Mock user data for the dashboard components
@@ -24,46 +31,129 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-8 pb-6 border-b border-slate-200">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">
-              Welcome, <span className="text-primary">Diabetic Chef!</span>
-            </h1>
-            <p className="text-slate-500 mt-1">
-              Your personalized meal planning dashboard
-            </p>
+    <div className="min-h-screen bg-slate-50">
+      {/* Header with search bar - Pinterest style */}
+      <header className="sticky top-0 z-10 bg-white shadow-sm py-3 px-4">
+        <div className="container mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-primary">Diabetic Chef</h1>
           </div>
           
-          <Link to="/profile">
-            <Button variant="outline" className="flex items-center gap-2 mt-4 md:mt-0 border-slate-300 shadow-sm">
-              <User size={16} />
-              My Profile
+          <div className="flex-1 max-w-md mx-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+              <input 
+                type="search" 
+                placeholder="Search for recipes, meal plans..." 
+                className="w-full py-2 pl-10 pr-4 rounded-full border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              />
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell size={20} />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
             </Button>
-          </Link>
+            
+            <Link to="/profile">
+              <Button variant="ghost" className="flex items-center gap-2 hover:bg-slate-100">
+                <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center">
+                  <User size={16} />
+                </div>
+                <span className="hidden md:inline text-sm font-medium">Profile</span>
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+      
+      <main className="container mx-auto py-8 px-4">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-slate-800">
+            Welcome back, <span className="text-primary">John!</span>
+          </h2>
+          <p className="text-slate-500">
+            Here's what's cooking in your personalized meal planning dashboard
+          </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-8">
-            <div className="bg-white rounded-lg shadow-sm border border-slate-100 overflow-hidden transform transition-all hover:shadow-md hover:-translate-y-1">
+        {/* Pinterest-inspired grid layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Glucose Monitor Card */}
+          <Card className="overflow-hidden hover:shadow-md transition-all hover:-translate-y-1 border-slate-100">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Glucose Monitoring</CardTitle>
+              <CardDescription>Track your glucose levels</CardDescription>
+            </CardHeader>
+            <CardContent>
               <GlucoseMonitor diabetesType={userData.diabetesType} />
-            </div>
-            <div className="bg-white rounded-lg shadow-sm border border-slate-100 overflow-hidden transform transition-all hover:shadow-md hover:-translate-y-1">
-              <HealthTips diabetesType={userData.diabetesType} />
-            </div>
-          </div>
+            </CardContent>
+          </Card>
           
-          <div className="space-y-8">
-            <div className="bg-white rounded-lg shadow-sm border border-slate-100 overflow-hidden transform transition-all hover:shadow-md hover:-translate-y-1">
+          {/* Meal Plan Card */}
+          <Card className="overflow-hidden hover:shadow-md transition-all hover:-translate-y-1 border-slate-100 md:row-span-2">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">This Week's Meal Plan</CardTitle>
+              <CardDescription>Personalized for your diet needs</CardDescription>
+            </CardHeader>
+            <CardContent>
               <MealPlanSection userData={userData} />
-            </div>
-            <div className="bg-white rounded-lg shadow-sm border border-slate-100 overflow-hidden transform transition-all hover:shadow-md hover:-translate-y-1">
+            </CardContent>
+          </Card>
+          
+          {/* Health Tips Card */}
+          <Card className="overflow-hidden hover:shadow-md transition-all hover:-translate-y-1 border-slate-100">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Health Tips</CardTitle>
+              <CardDescription>Managing {userData.diabetesType} diabetes</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <HealthTips diabetesType={userData.diabetesType} />
+            </CardContent>
+          </Card>
+          
+          {/* Nutrition Stats Card */}
+          <Card className="overflow-hidden hover:shadow-md transition-all hover:-translate-y-1 border-slate-100 md:col-span-2">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Nutrition Overview</CardTitle>
+              <CardDescription>Your weekly nutritional breakdown</CardDescription>
+            </CardHeader>
+            <CardContent>
               <NutritionStats userData={userData} />
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+          
+          {/* Quick Access Card */}
+          <Card className="overflow-hidden hover:shadow-md transition-all hover:-translate-y-1 border-slate-100">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Quick Access</CardTitle>
+              <CardDescription>Frequently used features</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <Button variant="outline" className="justify-start">
+                <div className="w-8 h-8 mr-2 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary text-xs">A1C</span>
+                </div>
+                Log A1C Level
+              </Button>
+              <Button variant="outline" className="justify-start">
+                <div className="w-8 h-8 mr-2 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary text-xs">🍽️</span>
+                </div>
+                Add Meal
+              </Button>
+              <Button variant="outline" className="justify-start">
+                <div className="w-8 h-8 mr-2 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary text-xs">💧</span>
+                </div>
+                Log Water Intake
+              </Button>
+            </CardContent>
+          </Card>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
