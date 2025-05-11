@@ -38,33 +38,34 @@ export const UserProfileForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
-      <CardHeader>
-        <CardTitle>Complete Your Profile</CardTitle>
+    <Card className="w-full max-w-3xl mx-auto bg-white shadow-md border-none">
+      <CardHeader className="pb-4 border-b">
+        <CardTitle className="text-xl text-slate-800">Complete Your Profile</CardTitle>
         <CardDescription>
           Provide your health information to get personalized meal plans and recommendations
         </CardDescription>
       </CardHeader>
       
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-8 pt-6">
           <div className="space-y-4">
-            <h3 className="font-medium">Personal Information</h3>
+            <h3 className="font-medium text-lg text-slate-800 border-l-4 border-primary pl-3">Personal Information</h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name" className="text-slate-700">Full Name</Label>
                 <Input 
                   id="name" 
                   name="name" 
                   value={formData.name} 
                   onChange={handleInputChange} 
                   required 
+                  className="border-slate-200 focus:border-primary"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="age">Age</Label>
+                <Label htmlFor="age" className="text-slate-700">Age</Label>
                 <Input 
                   id="age" 
                   name="age" 
@@ -74,15 +75,16 @@ export const UserProfileForm = () => {
                   value={formData.age} 
                   onChange={handleInputChange} 
                   required 
+                  className="border-slate-200 focus:border-primary"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="gender">Gender</Label>
+                <Label htmlFor="gender" className="text-slate-700">Gender</Label>
                 <select 
                   id="gender"
                   name="gender"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="flex h-10 w-full rounded-md border border-slate-200 bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   value={formData.gender}
                   onChange={handleInputChange}
                   required
@@ -97,11 +99,11 @@ export const UserProfileForm = () => {
           </div>
           
           <div className="space-y-4">
-            <h3 className="font-medium">Health Information</h3>
+            <h3 className="font-medium text-lg text-slate-800 border-l-4 border-primary pl-3">Health Information</h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="height">Height (cm)</Label>
+                <Label htmlFor="height" className="text-slate-700">Height (cm)</Label>
                 <Input 
                   id="height" 
                   name="height" 
@@ -110,11 +112,12 @@ export const UserProfileForm = () => {
                   value={formData.height} 
                   onChange={handleInputChange} 
                   required 
+                  className="border-slate-200 focus:border-primary"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="weight">Weight (kg)</Label>
+                <Label htmlFor="weight" className="text-slate-700">Weight (kg)</Label>
                 <Input 
                   id="weight" 
                   name="weight" 
@@ -123,15 +126,16 @@ export const UserProfileForm = () => {
                   value={formData.weight} 
                   onChange={handleInputChange} 
                   required 
+                  className="border-slate-200 focus:border-primary"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="diabetesType">Diabetes Type</Label>
+                <Label htmlFor="diabetesType" className="text-slate-700">Diabetes Type</Label>
                 <select 
                   id="diabetesType"
                   name="diabetesType"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="flex h-10 w-full rounded-md border border-slate-200 bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   value={formData.diabetesType}
                   onChange={handleInputChange}
                   required
@@ -145,11 +149,11 @@ export const UserProfileForm = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="activityLevel">Activity Level</Label>
+                <Label htmlFor="activityLevel" className="text-slate-700">Activity Level</Label>
                 <select 
                   id="activityLevel"
                   name="activityLevel"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="flex h-10 w-full rounded-md border border-slate-200 bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   value={formData.activityLevel}
                   onChange={handleInputChange}
                   required
@@ -165,11 +169,11 @@ export const UserProfileForm = () => {
           </div>
           
           <div className="space-y-4">
-            <h3 className="font-medium">Dietary Preferences</h3>
+            <h3 className="font-medium text-lg text-slate-800 border-l-4 border-primary pl-3">Dietary Preferences</h3>
             
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="weeklyBudget">Weekly Food Budget ($)</Label>
+                <Label htmlFor="weeklyBudget" className="text-slate-700">Weekly Food Budget ($)</Label>
                 <Input 
                   id="weeklyBudget" 
                   name="weeklyBudget" 
@@ -178,37 +182,40 @@ export const UserProfileForm = () => {
                   value={formData.weeklyBudget} 
                   onChange={handleInputChange} 
                   required 
+                  className="border-slate-200 focus:border-primary"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="dietaryRestrictions">Dietary Restrictions</Label>
+                <Label htmlFor="dietaryRestrictions" className="text-slate-700">Dietary Restrictions</Label>
                 <Textarea 
                   id="dietaryRestrictions" 
                   name="dietaryRestrictions" 
                   placeholder="E.g., vegetarian, gluten-free, allergies, etc."
                   value={formData.dietaryRestrictions} 
                   onChange={handleInputChange} 
+                  className="border-slate-200 focus:border-primary"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="foodPreferences">Food Preferences</Label>
+                <Label htmlFor="foodPreferences" className="text-slate-700">Food Preferences</Label>
                 <Textarea 
                   id="foodPreferences" 
                   name="foodPreferences" 
                   placeholder="Foods you enjoy or dislike"
                   value={formData.foodPreferences} 
                   onChange={handleInputChange} 
+                  className="border-slate-200 focus:border-primary"
                 />
               </div>
             </div>
           </div>
         </CardContent>
         
-        <CardFooter className="flex justify-between">
+        <CardFooter className="flex justify-between bg-slate-50 px-6 py-4 border-t">
           <Button type="button" variant="outline">Cancel</Button>
-          <Button type="submit">Save Profile</Button>
+          <Button type="submit" className="bg-primary hover:bg-primary/90">Save Profile</Button>
         </CardFooter>
       </form>
     </Card>

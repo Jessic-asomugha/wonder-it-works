@@ -9,7 +9,7 @@ const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("profile");
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-50">
       <div className="container py-10">
         <UserProfileHeader />
         
@@ -19,9 +19,19 @@ const UserProfile = () => {
           value={activeTab}
           onValueChange={setActiveTab}
         >
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsList className="w-full max-w-md mx-auto grid grid-cols-2 mb-8 bg-white shadow-sm">
+            <TabsTrigger 
+              value="profile" 
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              Profile
+            </TabsTrigger>
+            <TabsTrigger 
+              value="settings" 
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              Settings
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="profile">

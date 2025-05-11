@@ -41,53 +41,55 @@ export const UserSettingsForm = () => {
   };
   
   return (
-    <Card className="w-full max-w-3xl mx-auto">
-      <CardHeader>
-        <CardTitle>Account Settings</CardTitle>
+    <Card className="w-full max-w-3xl mx-auto bg-white shadow-md border-none">
+      <CardHeader className="pb-4 border-b">
+        <CardTitle className="text-xl text-slate-800">Account Settings</CardTitle>
         <CardDescription>
           Configure your account preferences and settings
         </CardDescription>
       </CardHeader>
       
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 p-6">
         {/* Notifications Settings */}
         <Collapsible 
           open={openSection === "notifications"} 
           onOpenChange={() => setOpenSection(openSection === "notifications" ? null : "notifications")}
-          className="border rounded-md"
+          className="border border-slate-200 rounded-lg overflow-hidden"
         >
-          <CollapsibleTrigger className="flex justify-between items-center w-full p-4 text-left">
+          <CollapsibleTrigger className="flex justify-between items-center w-full p-4 text-left bg-slate-50 hover:bg-slate-100 transition-colors">
             <div>
-              <h3 className="font-medium text-lg">Notifications</h3>
-              <p className="text-sm text-muted-foreground">Manage how we contact you</p>
+              <h3 className="font-medium text-lg text-slate-800">Notifications</h3>
+              <p className="text-sm text-slate-500">Manage how we contact you</p>
             </div>
             <div className="text-primary">
               {openSection === "notifications" ? "↑" : "↓"}
             </div>
           </CollapsibleTrigger>
-          <CollapsibleContent className="p-4 pt-0 border-t">
-            <div className="space-y-4">
+          <CollapsibleContent className="p-4 pt-0 bg-white border-t border-slate-200">
+            <div className="space-y-4 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="email-notif">Email Notifications</Label>
-                  <p className="text-sm text-muted-foreground">Receive updates on meal plans via email</p>
+                  <Label htmlFor="email-notif" className="font-medium text-slate-700">Email Notifications</Label>
+                  <p className="text-sm text-slate-500">Receive updates on meal plans via email</p>
                 </div>
                 <Switch 
                   id="email-notif"
                   checked={settings.notifications.email}
                   onCheckedChange={() => toggleSetting("notifications", "email")}
+                  className="data-[state=checked]:bg-primary"
                 />
               </div>
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="push-notif">Push Notifications</Label>
-                  <p className="text-sm text-muted-foreground">Get alerts on your device</p>
+                  <Label htmlFor="push-notif" className="font-medium text-slate-700">Push Notifications</Label>
+                  <p className="text-sm text-slate-500">Get alerts on your device</p>
                 </div>
                 <Switch 
                   id="push-notif" 
                   checked={settings.notifications.push}
                   onCheckedChange={() => toggleSetting("notifications", "push")}
+                  className="data-[state=checked]:bg-primary"
                 />
               </div>
             </div>
@@ -98,40 +100,42 @@ export const UserSettingsForm = () => {
         <Collapsible 
           open={openSection === "privacy"} 
           onOpenChange={() => setOpenSection(openSection === "privacy" ? null : "privacy")}
-          className="border rounded-md"
+          className="border border-slate-200 rounded-lg overflow-hidden"
         >
-          <CollapsibleTrigger className="flex justify-between items-center w-full p-4 text-left">
+          <CollapsibleTrigger className="flex justify-between items-center w-full p-4 text-left bg-slate-50 hover:bg-slate-100 transition-colors">
             <div>
-              <h3 className="font-medium text-lg">Privacy</h3>
-              <p className="text-sm text-muted-foreground">Manage your data and privacy preferences</p>
+              <h3 className="font-medium text-lg text-slate-800">Privacy</h3>
+              <p className="text-sm text-slate-500">Manage your data and privacy preferences</p>
             </div>
             <div className="text-primary">
               {openSection === "privacy" ? "↑" : "↓"}
             </div>
           </CollapsibleTrigger>
-          <CollapsibleContent className="p-4 pt-0 border-t">
-            <div className="space-y-4">
+          <CollapsibleContent className="p-4 pt-0 bg-white border-t border-slate-200">
+            <div className="space-y-4 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="share-data">Share Data</Label>
-                  <p className="text-sm text-muted-foreground">Allow anonymous data sharing to improve our service</p>
+                  <Label htmlFor="share-data" className="font-medium text-slate-700">Share Data</Label>
+                  <p className="text-sm text-slate-500">Allow anonymous data sharing to improve our service</p>
                 </div>
                 <Switch 
                   id="share-data"
                   checked={settings.privacy.shareData}
                   onCheckedChange={() => toggleSetting("privacy", "shareData")}
+                  className="data-[state=checked]:bg-primary"
                 />
               </div>
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="research">Research Participation</Label>
-                  <p className="text-sm text-muted-foreground">Participate in diabetes research studies</p>
+                  <Label htmlFor="research" className="font-medium text-slate-700">Research Participation</Label>
+                  <p className="text-sm text-slate-500">Participate in diabetes research studies</p>
                 </div>
                 <Switch 
                   id="research"
                   checked={settings.privacy.allowResearch}
                   onCheckedChange={() => toggleSetting("privacy", "allowResearch")}
+                  className="data-[state=checked]:bg-primary"
                 />
               </div>
             </div>
@@ -142,40 +146,42 @@ export const UserSettingsForm = () => {
         <Collapsible 
           open={openSection === "appearance"} 
           onOpenChange={() => setOpenSection(openSection === "appearance" ? null : "appearance")}
-          className="border rounded-md"
+          className="border border-slate-200 rounded-lg overflow-hidden"
         >
-          <CollapsibleTrigger className="flex justify-between items-center w-full p-4 text-left">
+          <CollapsibleTrigger className="flex justify-between items-center w-full p-4 text-left bg-slate-50 hover:bg-slate-100 transition-colors">
             <div>
-              <h3 className="font-medium text-lg">Appearance</h3>
-              <p className="text-sm text-muted-foreground">Customize how the app looks</p>
+              <h3 className="font-medium text-lg text-slate-800">Appearance</h3>
+              <p className="text-sm text-slate-500">Customize how the app looks</p>
             </div>
             <div className="text-primary">
               {openSection === "appearance" ? "↑" : "↓"}
             </div>
           </CollapsibleTrigger>
-          <CollapsibleContent className="p-4 pt-0 border-t">
-            <div className="space-y-4">
+          <CollapsibleContent className="p-4 pt-0 bg-white border-t border-slate-200">
+            <div className="space-y-4 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="dark-mode">Dark Mode</Label>
-                  <p className="text-sm text-muted-foreground">Switch between light and dark theme</p>
+                  <Label htmlFor="dark-mode" className="font-medium text-slate-700">Dark Mode</Label>
+                  <p className="text-sm text-slate-500">Switch between light and dark theme</p>
                 </div>
                 <Switch 
                   id="dark-mode"
                   checked={settings.appearance.darkMode}
                   onCheckedChange={() => toggleSetting("appearance", "darkMode")}
+                  className="data-[state=checked]:bg-primary"
                 />
               </div>
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="high-contrast">High Contrast</Label>
-                  <p className="text-sm text-muted-foreground">Increase visibility with high contrast mode</p>
+                  <Label htmlFor="high-contrast" className="font-medium text-slate-700">High Contrast</Label>
+                  <p className="text-sm text-slate-500">Increase visibility with high contrast mode</p>
                 </div>
                 <Switch 
                   id="high-contrast"
                   checked={settings.appearance.highContrast}
                   onCheckedChange={() => toggleSetting("appearance", "highContrast")}
+                  className="data-[state=checked]:bg-primary"
                 />
               </div>
             </div>
@@ -183,9 +189,9 @@ export const UserSettingsForm = () => {
         </Collapsible>
       </CardContent>
       
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between bg-slate-50 px-6 py-4 border-t">
         <Button type="button" variant="outline">Reset to Default</Button>
-        <Button onClick={handleSave}>Save Settings</Button>
+        <Button onClick={handleSave} className="bg-primary hover:bg-primary/90">Save Settings</Button>
       </CardFooter>
     </Card>
   );
