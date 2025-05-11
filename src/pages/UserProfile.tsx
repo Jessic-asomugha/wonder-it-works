@@ -1,7 +1,7 @@
 
 import { MainLayout } from "@/components/MainLayout";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { UserProfileHeader } from "@/components/UserProfileHeader";
+import UserProfileHeader from "@/components/UserProfileHeader";
 import { UserProfileForm } from "@/components/UserProfileForm";
 import { UserSettingsForm } from "@/components/UserSettingsForm";
 
@@ -32,14 +32,7 @@ const UserProfile = () => {
   return (
     <MainLayout>
       <div className="max-w-5xl mx-auto">
-        <UserProfileHeader 
-          name={userData.name}
-          username={userData.username}
-          avatar={userData.avatar}
-          dateJoined={userData.dateJoined}
-          bio={userData.bio}
-          stats={userData.stats}
-        />
+        <UserProfileHeader />
         
         <div className="mt-8">
           <Tabs defaultValue="profile" className="w-full">
@@ -48,10 +41,10 @@ const UserProfile = () => {
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
             <TabsContent value="profile" className="mt-6">
-              <UserProfileForm userData={userData} />
+              <UserProfileForm />
             </TabsContent>
             <TabsContent value="settings" className="mt-6">
-              <UserSettingsForm preferences={userData.preferences} />
+              <UserSettingsForm />
             </TabsContent>
           </Tabs>
         </div>

@@ -48,10 +48,12 @@ export const UserProfileForm = () => {
       
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-8 pt-6">
+          {/* Personal Information section */}
           <div className="space-y-4">
             <h3 className="font-medium text-lg text-slate-800 border-l-4 border-primary pl-3">Personal Information</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Name field */}
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-slate-700">Full Name</Label>
                 <Input 
@@ -64,6 +66,7 @@ export const UserProfileForm = () => {
                 />
               </div>
               
+              {/* Age field */}
               <div className="space-y-2">
                 <Label htmlFor="age" className="text-slate-700">Age</Label>
                 <Input 
@@ -79,6 +82,7 @@ export const UserProfileForm = () => {
                 />
               </div>
               
+              {/* Gender field */}
               <div className="space-y-2">
                 <Label htmlFor="gender" className="text-slate-700">Gender</Label>
                 <select 
@@ -98,10 +102,12 @@ export const UserProfileForm = () => {
             </div>
           </div>
           
+          {/* Health Information section */}
           <div className="space-y-4">
             <h3 className="font-medium text-lg text-slate-800 border-l-4 border-primary pl-3">Health Information</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Height field */}
               <div className="space-y-2">
                 <Label htmlFor="height" className="text-slate-700">Height (cm)</Label>
                 <Input 
@@ -116,6 +122,7 @@ export const UserProfileForm = () => {
                 />
               </div>
               
+              {/* Weight field */}
               <div className="space-y-2">
                 <Label htmlFor="weight" className="text-slate-700">Weight (kg)</Label>
                 <Input 
@@ -130,6 +137,7 @@ export const UserProfileForm = () => {
                 />
               </div>
               
+              {/* Diabetes Type dropdown */}
               <div className="space-y-2">
                 <Label htmlFor="diabetesType" className="text-slate-700">Diabetes Type</Label>
                 <select 
@@ -148,6 +156,7 @@ export const UserProfileForm = () => {
                 </select>
               </div>
               
+              {/* Activity Level dropdown */}
               <div className="space-y-2">
                 <Label htmlFor="activityLevel" className="text-slate-700">Activity Level</Label>
                 <select 
@@ -168,10 +177,12 @@ export const UserProfileForm = () => {
             </div>
           </div>
           
+          {/* Dietary Preferences section */}
           <div className="space-y-4">
             <h3 className="font-medium text-lg text-slate-800 border-l-4 border-primary pl-3">Dietary Preferences</h3>
             
             <div className="grid grid-cols-1 gap-6">
+              {/* Weekly Budget field */}
               <div className="space-y-2">
                 <Label htmlFor="weeklyBudget" className="text-slate-700">Weekly Food Budget ($)</Label>
                 <Input 
@@ -186,6 +197,7 @@ export const UserProfileForm = () => {
                 />
               </div>
               
+              {/* Dietary Restrictions field */}
               <div className="space-y-2">
                 <Label htmlFor="dietaryRestrictions" className="text-slate-700">Dietary Restrictions</Label>
                 <Textarea 
@@ -198,6 +210,7 @@ export const UserProfileForm = () => {
                 />
               </div>
               
+              {/* Food Preferences field */}
               <div className="space-y-2">
                 <Label htmlFor="foodPreferences" className="text-slate-700">Food Preferences</Label>
                 <Textarea 
