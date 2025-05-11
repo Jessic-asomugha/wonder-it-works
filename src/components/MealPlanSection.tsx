@@ -84,10 +84,10 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
           </Button>
         </div>
         
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs text-slate-500">{dailyTotalCalories} calories</span>
+        <div className="flex items-center gap-1.5 text-sm">
+          <span className="text-slate-500">{dailyTotalCalories} calories</span>
           <span className="text-xs text-slate-400">•</span>
-          <span className="text-xs text-slate-500">
+          <span className="text-slate-500">
             Budget: {userData.budget.currency}{Math.round(userData.budget.weekly / 7)}
           </span>
         </div>
@@ -97,7 +97,7 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
         <TabsContent value="daily" className="mt-0">
           <div className="space-y-3">
             {mockMealPlan.daily.map((meal, index) => (
-              <div key={index} className="bg-slate-50/80 p-3 rounded-md">
+              <div key={index} className="bg-slate-50/80 p-3 rounded-md hover:bg-slate-50 transition-colors">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
