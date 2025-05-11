@@ -1,9 +1,9 @@
 
 import { MainLayout } from "@/components/MainLayout";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import UserProfileHeader from "@/components/UserProfileHeader";
 import { UserProfileForm } from "@/components/UserProfileForm";
 import { UserSettingsForm } from "@/components/UserSettingsForm";
+import { Card, CardContent } from "@/components/ui/card";
 
 // Mock user data
 const userData = {
@@ -32,7 +32,29 @@ const UserProfile = () => {
   return (
     <MainLayout>
       <div className="max-w-5xl mx-auto">
-        <UserProfileHeader />
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4">
+              <div className="h-20 w-20 rounded-full overflow-hidden bg-primary/10">
+                <img 
+                  src={userData.avatar} 
+                  alt={userData.name} 
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold">{userData.name}</h1>
+                <p className="text-slate-500">{userData.email}</p>
+                <p className="text-sm mt-1">
+                  <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs">
+                    {userData.diabetesType}
+                  </span>
+                  <span className="text-slate-400 ml-2">Joined {userData.dateJoined}</span>
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         
         <div className="mt-8">
           <Tabs defaultValue="profile" className="w-full">

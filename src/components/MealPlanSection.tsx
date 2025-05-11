@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Utensils } from "lucide-react";
+import { Calendar, Utensils, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface MealPlanSectionProps {
   userData: {
@@ -28,32 +29,88 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
       {
         mealType: "Breakfast",
         dishes: [
-          { name: "Greek yogurt with berries", calories: 220, carbs: 28, proteins: 18, fats: 6 },
-          { name: "Whole grain toast", calories: 80, carbs: 15, proteins: 3, fats: 1 }
+          { 
+            id: "greek-yogurt",
+            name: "Greek yogurt with berries", 
+            calories: 220, 
+            carbs: 28, 
+            proteins: 18, 
+            fats: 6 
+          },
+          { 
+            id: "whole-grain-toast",
+            name: "Whole grain toast", 
+            calories: 80, 
+            carbs: 15, 
+            proteins: 3, 
+            fats: 1 
+          }
         ],
         totalCalories: 300
       },
       {
         mealType: "Lunch",
         dishes: [
-          { name: "Grilled chicken salad", calories: 350, carbs: 15, proteins: 40, fats: 12 },
-          { name: "Quinoa", calories: 120, carbs: 21, proteins: 4, fats: 2 }
+          { 
+            id: "grilled-chicken",
+            name: "Grilled chicken salad", 
+            calories: 350, 
+            carbs: 15, 
+            proteins: 40, 
+            fats: 12 
+          },
+          { 
+            id: "quinoa",
+            name: "Quinoa", 
+            calories: 120, 
+            carbs: 21, 
+            proteins: 4, 
+            fats: 2 
+          }
         ],
         totalCalories: 470
       },
       {
         mealType: "Dinner",
         dishes: [
-          { name: "Salmon with steamed vegetables", calories: 320, carbs: 10, proteins: 30, fats: 18 },
-          { name: "Sweet potato", calories: 150, carbs: 35, proteins: 2, fats: 0 }
+          { 
+            id: "salmon",
+            name: "Salmon with steamed vegetables", 
+            calories: 320, 
+            carbs: 10, 
+            proteins: 30, 
+            fats: 18 
+          },
+          { 
+            id: "sweet-potato",
+            name: "Sweet potato", 
+            calories: 150, 
+            carbs: 35, 
+            proteins: 2, 
+            fats: 0 
+          }
         ],
         totalCalories: 470
       },
       {
         mealType: "Snacks",
         dishes: [
-          { name: "Apple with almond butter", calories: 200, carbs: 25, proteins: 5, fats: 10 },
-          { name: "Carrot sticks", calories: 50, carbs: 12, proteins: 1, fats: 0 }
+          { 
+            id: "apple-almond",
+            name: "Apple with almond butter", 
+            calories: 200, 
+            carbs: 25, 
+            proteins: 5, 
+            fats: 10 
+          },
+          { 
+            id: "carrot-sticks",
+            name: "Carrot sticks", 
+            calories: 50, 
+            carbs: 12, 
+            proteins: 1, 
+            fats: 0 
+          }
         ],
         totalCalories: 250
       }
@@ -66,6 +123,12 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
   const dailyTotalCalories = mockMealPlan.daily.reduce(
     (sum, meal) => sum + meal.totalCalories, 0
   );
+
+  // Function to handle meal logging with feedback
+  const handleLogMeal = (mealType: string, dishId: string) => {
+    // In a real app, this would open a modal or navigate to a feedback form
+    console.log(`Logging meal: ${mealType}, Dish ID: ${dishId}`);
+  };
 
   return (
     <div className="p-4">
@@ -108,7 +171,12 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
                       <p className="text-xs text-slate-500">{meal.totalCalories} cal</p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm" className="h-7 text-xs">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-7 text-xs"
+                    onClick={() => handleLogMeal(meal.mealType, meal.dishes[0].id)}
+                  >
                     Log
                   </Button>
                 </div>
@@ -116,9 +184,20 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
                 <div className="pl-10 space-y-2">
                   {meal.dishes.map((dish, dishIndex) => (
                     <div key={dishIndex} className="border-l-2 border-slate-200 pl-2">
-                      <div className="text-sm">{dish.name}</div>
-                      <div className="text-xs text-slate-500 mt-0.5">
-                        {dish.calories} cal • {dish.carbs}g carbs • {dish.proteins}g protein • {dish.fats}g fat
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-sm">{dish.name}</div>
+                          <div className="text-xs text-slate-500 mt-0.5">
+                            {dish.calories} cal • {dish.carbs}g carbs • {dish.proteins}g protein • {dish.fats}g fat
+                          </div>
+                        </div>
+                        {dish.id && (
+                          <Link to={`/meal-detail/${dish.id}`}>
+                            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
+                              Details <ArrowRight className="ml-1 h-3 w-3" />
+                            </Button>
+                          </Link>
+                        )}
                       </div>
                     </div>
                   ))}

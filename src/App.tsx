@@ -14,6 +14,9 @@ import UserProfile from "./pages/UserProfile";
 import HealthTipsPage from "./pages/HealthTipsPage";
 import GlucoseMonitoringPage from "./pages/GlucoseMonitoringPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import MealDetail from "./pages/MealDetail";
+import ChatbotPage from "./pages/ChatbotPage";
+import FeedbackPage from "./pages/FeedbackPage";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +36,9 @@ const App = () => (
           <Route path="/health-tips" element={<HealthTipsPage />} />
           <Route path="/glucose-monitoring" element={<GlucoseMonitoringPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/meal-detail/:mealId" element={<MealDetail />} />
+          <Route path="/chatbot" element={<ChatbotPage />} />
+          <Route path="/feedback" element={<FeedbackPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
