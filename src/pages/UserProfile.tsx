@@ -5,7 +5,7 @@ import { UserProfileForm } from "@/components/UserProfileForm";
 import { UserSettingsForm } from "@/components/UserSettingsForm";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { UserProfileHeader } from "@/components/UserProfileHeader";
+import UserProfileHeader from "@/components/UserProfileHeader";
 import { useState } from "react";
 
 const UserProfile = () => {
