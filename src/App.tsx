@@ -17,6 +17,7 @@ import NotificationsPage from "./pages/NotificationsPage";
 import MealDetail from "./pages/MealDetail";
 import ChatbotPage from "./pages/ChatbotPage";
 import FeedbackPage from "./pages/FeedbackPage";
+import ActivityPage from "./pages/ActivityPage";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/meal-detail/:mealId" element={<MealDetail />} />
           <Route path="/chatbot" element={<ChatbotPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
+          <Route path="/activity" element={<ActivityPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

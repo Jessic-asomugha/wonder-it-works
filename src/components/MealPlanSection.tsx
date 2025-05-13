@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Utensils, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { MealFeedbackDialog } from "@/components/MealFeedbackDialog";
 
 interface MealPlanSectionProps {
   userData: {
@@ -22,6 +23,8 @@ interface MealPlanSectionProps {
 
 export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
   const [planPeriod, setPlanPeriod] = useState("daily");
+  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
+  const [currentMeal, setCurrentMeal] = useState({ id: "", name: "" });
   
   // Mock meal plan data - in a real app this would come from an API/backend
   const mockMealPlan = {
@@ -125,9 +128,9 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
   );
 
   // Function to handle meal logging with feedback
-  const handleLogMeal = (mealType: string, dishId: string) => {
-    // In a real app, this would open a modal or navigate to a feedback form
-    console.log(`Logging meal: ${mealType}, Dish ID: ${dishId}`);
+  const handleLogMeal = (mealType: string, dishId: string, dishName: string) => {
+    setCurrentMeal({ id: dishId, name: dishName });
+    setFeedbackDialogOpen(true);
   };
 
   return (
@@ -175,7 +178,7 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
                     variant="outline" 
                     size="sm" 
                     className="h-7 text-xs"
-                    onClick={() => handleLogMeal(meal.mealType, meal.dishes[0].id)}
+                    onClick={() => handleLogMeal(meal.mealType, meal.dishes[0].id, meal.mealType)}
                   >
                     Log
                   </Button>
@@ -191,13 +194,23 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
                             {dish.calories} cal • {dish.carbs}g carbs • {dish.proteins}g protein • {dish.fats}g fat
                           </div>
                         </div>
-                        {dish.id && (
-                          <Link to={`/meal-detail/${dish.id}`}>
-                            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
-                              Details <ArrowRight className="ml-1 h-3 w-3" />
-                            </Button>
-                          </Link>
-                        )}
+                        <div className="flex items-center gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-7 text-xs"
+                            onClick={() => handleLogMeal(meal.mealType, dish.id, dish.name)}
+                          >
+                            Log
+                          </Button>
+                          {dish.id && (
+                            <Link to={`/meal-detail/${dish.id}`}>
+                              <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
+                                Details <ArrowRight className="ml-1 h-3 w-3" />
+                              </Button>
+                            </Link>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -217,6 +230,14 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
           </div>
         </TabsContent>
       </Tabs>
+      
+      <MealFeedbackDialog 
+        isOpen={feedbackDialogOpen}
+        onClose={() => setFeedbackDialogOpen(false)}
+        mealId={currentMeal.id}
+        mealName={currentMeal.name}
+        initialStep="options"
+      />
     </div>
   );
 };

@@ -1,199 +1,162 @@
 
 import { useState } from "react";
 import { MainLayout } from "@/components/MainLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageSquare } from "lucide-react";
-
-// Mock chatbot responses - in a real app, this would connect to an AI API
-const mockResponses = {
-  greetings: [
-    "Hello! How can I assist you with your meal planning today?",
-    "Hi there! I'm here to help with nutrition advice and diabetes management.",
-    "Welcome! I can answer questions about recipes, nutrition, or diabetes management."
-  ],
-  mealPlanning: [
-    "For meal planning, I recommend focusing on balanced meals with lean proteins, healthy fats, and complex carbohydrates.",
-    "Creating a weekly meal plan can help maintain consistent blood sugar levels. Would you like some template examples?",
-    "Regular meal times are important for diabetes management. Try to eat at the same times every day."
-  ],
-  nutrition: [
-    "Fiber-rich foods like vegetables, beans, and whole grains can help manage blood sugar levels.",
-    "Monitoring carbohydrate intake is important. Focus on complex carbs from whole food sources.",
-    "Protein helps you feel full and doesn't raise blood sugar. Good sources include fish, chicken, and plant-based options like legumes."
-  ],
-  default: [
-    "I'm not sure I understand. Could you rephrase your question?",
-    "That's a good question. Let me help you find more information about that.",
-    "I'm here to help with nutrition and diabetes management. Could you provide more details about what you're looking for?"
-  ]
-};
-
-// Helper function to determine response category based on user input
-const getCategoryFromInput = (input: string): keyof typeof mockResponses => {
-  input = input.toLowerCase();
-  if (input.includes("hi") || input.includes("hello") || input.includes("hey") || input.includes("greet")) {
-    return "greetings";
-  } else if (input.includes("meal") || input.includes("plan") || input.includes("schedule")) {
-    return "mealPlanning";
-  } else if (input.includes("nutrition") || input.includes("food") || input.includes("eat") || input.includes("diet")) {
-    return "nutrition";
-  } else {
-    return "default";
-  }
-};
-
-// Helper function to select a random response from the appropriate category
-const getResponse = (category: keyof typeof mockResponses): string => {
-  const responses = mockResponses[category];
-  return responses[Math.floor(Math.random() * responses.length)];
-};
-
-interface Message {
-  id: number;
-  content: string;
-  sender: "user" | "bot";
-  timestamp: Date;
-}
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowUp, User, Bot, Clock, Search } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const ChatbotPage = () => {
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState([
     {
       id: 1,
-      content: "Hello! I'm your Diabetic Chef assistant. How can I help you today?",
       sender: "bot",
-      timestamp: new Date()
-    }
+      content: "Hello! I'm your diabetes management assistant. How can I help you today?",
+      timestamp: new Date().toISOString(),
+    },
   ]);
-
-  const handleSendMessage = () => {
-    if (!input.trim()) return;
-
+  
+  const [inputMessage, setInputMessage] = useState("");
+  
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!inputMessage.trim()) return;
+    
     // Add user message
-    const userMessage: Message = {
+    const userMessage = {
       id: messages.length + 1,
-      content: input,
       sender: "user",
-      timestamp: new Date()
+      content: inputMessage,
+      timestamp: new Date().toISOString(),
     };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-
-    // Simulate bot response with a small delay
+    
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage("");
+    
+    // Simulate bot response after a short delay
     setTimeout(() => {
-      const category = getCategoryFromInput(userMessage.content);
-      const responseContent = getResponse(category);
-
-      const botResponse: Message = {
+      const botResponses = [
+        "I understand you want to know more about managing Type 2 diabetes. Regular monitoring of blood glucose levels is essential, along with a balanced diet and regular exercise.",
+        "According to research, maintaining a consistent meal schedule can help manage blood sugar levels throughout the day.",
+        "The meal plan I've created for you takes into account your specific nutritional needs to help keep your glucose levels stable.",
+        "That's a great question! Foods with a low glycemic index are generally better for maintaining stable blood sugar levels.",
+        "I recommend speaking with your healthcare provider before making significant changes to your diet or exercise routine."
+      ];
+      
+      const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+      
+      const botMessage = {
         id: messages.length + 2,
-        content: responseContent,
         sender: "bot",
-        timestamp: new Date()
+        content: randomResponse,
+        timestamp: new Date().toISOString(),
       };
-
-      setMessages((prev) => [...prev, botResponse]);
+      
+      setMessages(prev => [...prev, botMessage]);
     }, 1000);
   };
+  
+  // Example suggested questions
+  const suggestedQuestions = [
+    "What foods should I avoid with Type 2 diabetes?",
+    "How can I reduce my blood sugar quickly?",
+    "What's a good exercise routine for diabetics?",
+    "Can you explain my meal plan?",
+    "How often should I check my glucose levels?"
+  ];
 
   return (
     <MainLayout>
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Nutrition Assistant</h1>
-
-        <Card className="overflow-hidden">
-          <CardHeader className="bg-primary/5 border-b">
-            <CardTitle className="text-primary flex items-center">
-              <MessageSquare className="w-5 h-5 mr-2" />
-              Diabetic Chef Assistant
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="h-[400px] overflow-y-auto p-4 space-y-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+        <Card className="border-none shadow-lg overflow-hidden h-[75vh] flex flex-col">
+          <div className="bg-primary/5 border-b p-4">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Bot className="h-5 w-5" />
+              Diabetes Management Assistant
+            </h2>
+            <p className="text-sm text-slate-500">
+              Ask me anything about your diet, glucose monitoring, or diabetes management
+            </p>
+          </div>
+          
+          <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+            {messages.map((message) => (
+              <div 
+                key={message.id} 
+                className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div 
+                  className={`flex gap-3 max-w-[80%] ${message.sender === "user" ? "flex-row-reverse" : ""}`}
                 >
-                  <div
-                    className={`max-w-[80%] p-3 rounded-lg ${
+                  <Avatar className={message.sender === "user" ? "bg-primary/20" : "bg-slate-100"}>
+                    {message.sender === "user" ? (
+                      <>
+                        <AvatarImage src="/placeholder.svg" alt="User" />
+                        <AvatarFallback className="text-primary">
+                          <User className="h-4 w-4" />
+                        </AvatarFallback>
+                      </>
+                    ) : (
+                      <>
+                        <AvatarImage src="/placeholder.svg" alt="Bot" />
+                        <AvatarFallback className="bg-primary/10 text-primary">
+                          <Bot className="h-4 w-4" />
+                        </AvatarFallback>
+                      </>
+                    )}
+                  </Avatar>
+                  
+                  <div 
+                    className={`rounded-2xl px-4 py-2.5 text-sm ${
                       message.sender === "user" 
                         ? "bg-primary text-white" 
                         : "bg-slate-100 text-slate-800"
                     }`}
                   >
-                    {message.content}
-                    <div className={`text-xs mt-1 ${message.sender === "user" ? "text-primary-foreground/70" : "text-slate-500"}`}>
-                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <p>{message.content}</p>
+                    <div className={`text-xs mt-1 flex items-center gap-1 ${
+                      message.sender === "user" ? "text-primary-50" : "text-slate-500"
+                    }`}>
+                      <Clock className="h-3 w-3" />
+                      {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
                 </div>
+              </div>
+            ))}
+          </CardContent>
+          
+          <div className="p-4 border-t bg-white">
+            <h3 className="text-sm font-medium mb-2 text-slate-600">Suggested questions:</h3>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {suggestedQuestions.map((question, index) => (
+                <button
+                  key={index}
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded-full transition-colors"
+                  onClick={() => setInputMessage(question)}
+                >
+                  {question}
+                </button>
               ))}
             </div>
-            <div className="p-3 border-t flex gap-2">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSendMessage();
-                  }
-                }}
-                placeholder="Type your question here..."
-                className="flex-1"
-              />
-              <Button onClick={handleSendMessage}>Send</Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="mt-6 bg-slate-50 p-4 rounded-lg">
-          <h3 className="font-medium mb-2">Suggested Questions</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <Button 
-              variant="outline" 
-              className="justify-start text-sm h-auto py-2"
-              onClick={() => {
-                setInput("What meals are best for managing blood sugar?");
-                handleSendMessage();
-              }}
-            >
-              What meals are best for managing blood sugar?
-            </Button>
-            <Button 
-              variant="outline" 
-              className="justify-start text-sm h-auto py-2"
-              onClick={() => {
-                setInput("How much protein should I eat daily?");
-                handleSendMessage();
-              }}
-            >
-              How much protein should I eat daily?
-            </Button>
-            <Button 
-              variant="outline" 
-              className="justify-start text-sm h-auto py-2"
-              onClick={() => {
-                setInput("Can you suggest a low-carb breakfast?");
-                handleSendMessage();
-              }}
-            >
-              Can you suggest a low-carb breakfast?
-            </Button>
-            <Button 
-              variant="outline" 
-              className="justify-start text-sm h-auto py-2"
-              onClick={() => {
-                setInput("What fruits are best for diabetics?");
-                handleSendMessage();
-              }}
-            >
-              What fruits are best for diabetics?
-            </Button>
+            
+            <form onSubmit={handleSendMessage} className="flex gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  placeholder="Type your question..."
+                  className="pl-9 pr-4 py-2.5 h-11"
+                />
+              </div>
+              <Button type="submit" size="icon" className="h-11 w-11 rounded-full">
+                <ArrowUp className="h-5 w-5" />
+              </Button>
+            </form>
           </div>
-        </div>
+        </Card>
       </div>
     </MainLayout>
   );

@@ -11,7 +11,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Home, User, ThumbsUp, Thermometer, Bell, MessageSquare, StarHalf, FileText } from "lucide-react";
+import { Home, User, ThumbsUp, Thermometer, Bell, MessageSquare, StarHalf, Activity } from "lucide-react";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -23,6 +23,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const navigation = [
     { name: "Home", href: "/dashboard", icon: Home },
     { name: "Profile", href: "/profile", icon: User },
+    { name: "Activity", href: "/activity", icon: Activity },
     { name: "Health Tips", href: "/health-tips", icon: ThumbsUp },
     { name: "Glucose Monitoring", href: "/glucose-monitoring", icon: Thermometer },
     { name: "Chat Assistant", href: "/chatbot", icon: MessageSquare },

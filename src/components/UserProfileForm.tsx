@@ -7,18 +7,21 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/sonner";
 
-export const UserProfileForm = () => {
+export const UserProfileForm = ({ onSave, initialData = {} }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    gender: "",
-    height: "",
-    weight: "",
-    diabetesType: "none",
-    activityLevel: "moderate",
-    weeklyBudget: "",
-    dietaryRestrictions: "",
-    foodPreferences: "",
+    name: initialData.name || "",
+    email: initialData.email || "",
+    username: initialData.username || "",
+    age: initialData.age || "",
+    gender: initialData.gender || "",
+    height: initialData.height || "",
+    weight: initialData.weight || "",
+    diabetesType: initialData.diabetesType || "none",
+    activityLevel: initialData.activityLevel || "moderate",
+    weeklyBudget: initialData.weeklyBudget || "",
+    dietaryRestrictions: initialData.dietaryRestrictions || "",
+    foodPreferences: initialData.foodPreferences || "",
+    bio: initialData.bio || "",
   });
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -32,6 +35,7 @@ export const UserProfileForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would save the data to a backend
+    onSave(formData);
     toast.success("Profile updated successfully", {
       description: "Your meal plan will be customized based on your profile",
     });
@@ -60,6 +64,33 @@ export const UserProfileForm = () => {
                   id="name" 
                   name="name" 
                   value={formData.name} 
+                  onChange={handleInputChange} 
+                  required 
+                  className="border-slate-200 focus:border-primary"
+                />
+              </div>
+              
+              {/* Email field */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-slate-700">Email</Label>
+                <Input 
+                  id="email" 
+                  name="email" 
+                  type="email" 
+                  value={formData.email} 
+                  onChange={handleInputChange} 
+                  required 
+                  className="border-slate-200 focus:border-primary"
+                />
+              </div>
+              
+              {/* Username field */}
+              <div className="space-y-2">
+                <Label htmlFor="username" className="text-slate-700">Username</Label>
+                <Input 
+                  id="username" 
+                  name="username" 
+                  value={formData.username} 
                   onChange={handleInputChange} 
                   required 
                   className="border-slate-200 focus:border-primary"
@@ -98,6 +129,19 @@ export const UserProfileForm = () => {
                   <option value="female">Female</option>
                   <option value="other">Other</option>
                 </select>
+              </div>
+              
+              {/* Bio field */}
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="bio" className="text-slate-700">Bio</Label>
+                <Textarea 
+                  id="bio" 
+                  name="bio" 
+                  placeholder="Tell us a little about yourself..."
+                  value={formData.bio} 
+                  onChange={handleInputChange} 
+                  className="border-slate-200 focus:border-primary"
+                />
               </div>
             </div>
           </div>
