@@ -2,10 +2,52 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChefHat, DollarSign, ShoppingBag, LineChart, BookOpen, Brain, Target, Beaker } from "lucide-react";
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
+      {/* Navigation Bar moved to the top */}
+      <header className="border-b border-border py-4">
+        <div className="container max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-2xl font-bold gradient-heading">MealPlanPro</div>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                    <Link to="/">Home</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                    <Link to="/#about">About</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                    <Link to="/#contact">Contact</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                    <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            <div className="flex gap-4">
+              <Link to="/login">
+                <Button variant="outline" size="sm">Log In</Button>
+              </Link>
+              <Link to="/register">
+                <Button size="sm">Sign Up</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+      
       {/* Hero Section with enhanced design */}
       <div className="relative bg-gradient-to-b from-accent to-background pt-20 pb-16 md:pt-32 md:pb-24">
         <div className="container max-w-7xl mx-auto px-6">
@@ -29,8 +71,8 @@ const Index = () => {
             <div className="flex-1 w-full max-w-md">
               <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/20 via-accent/40 to-background shadow-xl glass-card flex items-center justify-center p-6">
                 <img 
-                  src="https://images.unsplash.com/photo-1617196701537-7329482cc9fe?q=80&w=600&auto=format&fit=crop" 
-                  alt="Healthy meal with app UI mockup" 
+                  src="https://images.unsplash.com/photo-1543362906-acfc16c67564?q=80&w=600&auto=format&fit=crop" 
+                  alt="Healthy meal with vegetables and fruits" 
                   className="rounded-2xl shadow-lg object-cover w-full h-full"
                 />
               </div>
@@ -104,7 +146,7 @@ const Index = () => {
         </div>
       </div>
       
-      {/* About the System Section */}
+      {/* About the System Section with updated food-related image */}
       <div className="py-16 md:py-24 bg-accent/30">
         <div className="container max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center gap-12">
@@ -122,8 +164,8 @@ const Index = () => {
             </div>
             <div className="flex-1">
               <img 
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop" 
-                alt="System workflow diagram" 
+                src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?q=80&w=600&auto=format&fit=crop" 
+                alt="Healthy meal preparation with fresh ingredients" 
                 className="rounded-xl shadow-lg w-full"
               />
             </div>
@@ -300,17 +342,10 @@ const Index = () => {
         </div>
       </div>
       
-      {/* Footer with subtle gradient */}
+      {/* Footer with navigation links removed (moved to top) */}
       <footer className="bg-card py-8 mt-8 border-t border-border">
         <div className="container max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-2xl font-bold gradient-heading">MealPlanPro</div>
-            <div className="flex gap-6">
-              <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
-              <Link to="#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
-              <Link to="#contact" className="text-sm text-muted-foreground hover:text-foreground">Contact</Link>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground">GitHub</a>
-            </div>
+          <div className="flex justify-center items-center">
             <div className="text-sm text-muted-foreground">
               © 2025 MealPlanPro. All rights reserved.
             </div>
