@@ -4,27 +4,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MealPlanPro - Smart Meal Planning for Diabetic Patients</title>
+  <title>DiaBuddy - Your Diabetes Management Companion</title>
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="app-container">
+    <!-- Header -->
+    <header class="landing-header">
+      <div class="container header-container">
+        <div class="logo">
+          <img src="assets/logo.svg" alt="DiaBuddy" width="40" height="40">
+          <span>DiaBuddy</span>
+        </div>
+        <nav class="main-nav">
+          <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <ul class="nav-list">
+            <li><a href="#features" class="nav-link">Features</a></li>
+            <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+            <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+            <li><a href="#faq" class="nav-link">FAQ</a></li>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="login.html" class="login-btn">Log In</a>
+          <a href="register.html" class="register-btn">Sign Up</a>
+        </div>
+      </div>
+    </header>
+
     <!-- Hero Section -->
     <section class="hero">
       <div class="container">
         <div class="hero-content">
           <div class="hero-text">
-            <h1 class="gradient-heading">Smarter, Healthier, Budget-Friendly Meals for Diabetic Patients</h1>
-            <p>AI-powered meal plans tailored to your health and your wallet.</p>
+            <h1 class="gradient-heading">Manage Diabetes With Ease</h1>
+            <p>DiaBuddy helps you track your glucose levels, medication, diet, and exercise in one place. Take control of your health with personalized insights and recommendations.</p>
             <div class="button-group">
-              <a href="#" class="button primary-button">Start Planning Now</a>
-              <a href="#" class="button outline-button">View Demo</a>
+              <a href="register.html" class="primary-button">Get Started Free</a>
+              <a href="#features" class="outline-button">Learn More</a>
             </div>
           </div>
           <div class="hero-image">
             <div class="image-container">
-              <img src="https://images.unsplash.com/photo-1617196701537-7329482cc9fe?q=80&w=600&auto=format&fit=crop" alt="Healthy meal with app UI mockup">
+              <img src="assets/hero-image.jpg" alt="DiaBuddy Dashboard Preview">
             </div>
           </div>
         </div>
@@ -33,172 +60,155 @@
     </section>
 
     <!-- Features Section -->
-    <section class="features">
+    <section id="features" class="features">
       <div class="container">
         <div class="section-header">
-          <h2 class="gradient-heading">Key Features</h2>
-          <p>Our comprehensive platform makes meal planning for diabetic patients simple, effective, and affordable.</p>
+          <h2 class="gradient-heading">Features Designed For You</h2>
+          <p>Everything you need to manage diabetes effectively in one simple app.</p>
         </div>
-        
         <div class="feature-cards">
           <div class="feature-card">
             <div class="icon-wrapper">
-              <i class="icon-chef"></i>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9.09 9C9.3251 8.33167 9.78915 7.76811 10.4 7.40913C11.0108 7.05016 11.7289 6.91894 12.4272 7.03871C13.1255 7.15849 13.7588 7.52152 14.2151 8.06353C14.6713 8.60553 14.9211 9.29152 14.92 10C14.92 12 11.92 13 11.92 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </div>
-            <h3>Personalized Meal Planning</h3>
-            <p>Tailored to your medical and dietary profile.</p>
+            <h3>Glucose Tracking</h3>
+            <p>Log and monitor your blood glucose levels with easy-to-read charts and trends.</p>
           </div>
-          
           <div class="feature-card">
             <div class="icon-wrapper">
-              <i class="icon-dollar"></i>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 3V15C6 16.0609 6.42143 17.0783 7.17157 17.8284C7.92172 18.5786 8.93913 19 10 19C11.0609 19 12.0783 18.5786 12.8284 17.8284C13.5786 17.0783 14 16.0609 14 15V9C14 8.46957 14.2107 7.96086 14.5858 7.58579C14.9609 7.21071 15.4696 7 16 7C16.5304 7 17.0391 7.21071 17.4142 7.58579C17.7893 7.96086 18 8.46957 18 9V21M6 11H14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </div>
-            <h3>Cost Optimization</h3>
-            <p>Smart choices that save money without compromising nutrition.</p>
+            <h3>Medication Reminders</h3>
+            <p>Never miss a dose with customized medication reminders and tracking.</p>
           </div>
-          
           <div class="feature-card">
             <div class="icon-wrapper">
-              <i class="icon-bag"></i>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 22H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 18V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 18V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 18V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 18V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 2L20 7H4L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </div>
-            <h3>Auto Grocery List</h3>
-            <p>Get your ingredients ready with a single click.</p>
+            <h3>Nutrition Planning</h3>
+            <p>Track carbs and calories with personalized meal plans tailored for diabetes management.</p>
           </div>
-          
           <div class="feature-card">
             <div class="icon-wrapper">
-              <i class="icon-chart"></i>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 17L12 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 17L8 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 17L16 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 22H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </div>
-            <h3>Progress Tracking</h3>
-            <p>Stay on top of your diet and improvement trends.</p>
+            <h3>Activity Tracking</h3>
+            <p>Monitor your exercise and see how it impacts your glucose levels and overall health.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- About Section -->
-    <section class="about">
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
       <div class="container">
-        <div class="about-content">
-          <div class="about-text">
-            <h2 class="gradient-heading">About the System</h2>
-            <p>MealPlanPro addresses the challenge diabetic patients face when planning meals that both manage their condition and fit their budget.</p>
-            <p>Our system combines nutritional science with cost optimization algorithms to create affordable, delicious, and medically-appropriate meal plans for diabetic individuals.</p>
-            <p>What sets us apart is our focus on both health outcomes and financial accessibility, making diabetes management more sustainable for everyone.</p>
-          </div>
-          <div class="about-image">
-            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop" alt="System workflow diagram">
-          </div>
+        <div class="section-header">
+          <h2>How DiaBuddy Works</h2>
         </div>
-      </div>
-    </section>
-
-    <!-- Trust Section -->
-    <section class="trust">
-      <div class="container">
-        <h2 class="gradient-heading text-center">Why Trust Us</h2>
-        
-        <div class="trust-grid">
-          <div class="trust-item">
-            <div class="icon-wrapper">
-              <i class="icon-book"></i>
-            </div>
-            <div>
-              <h3>Backed by Research</h3>
-              <p>Our recommendations are based on established dietary guidelines and current medical literature for diabetic care.</p>
-            </div>
-          </div>
-          
-          <div class="trust-item">
-            <div class="icon-wrapper">
-              <i class="icon-brain"></i>
-            </div>
-            <div>
-              <h3>Smart Algorithms</h3>
-              <p>Uses optimization techniques to reduce cost while maintaining optimal nutritional balance for diabetic health.</p>
-            </div>
-          </div>
-          
-          <div class="trust-item">
-            <div class="icon-wrapper">
-              <i class="icon-beaker"></i>
-            </div>
-            <div>
-              <h3>Tested with Sample Profiles</h3>
-              <p>Validated using real-life diabetic scenarios to ensure practical and effective meal planning.</p>
-            </div>
-          </div>
-          
-          <div class="trust-item">
-            <div class="icon-wrapper">
-              <i class="icon-target"></i>
-            </div>
-            <div>
-              <h3>Purpose-Driven</h3>
-              <p>Built as a project with real-world health impact in mind, focusing on improved outcomes for diabetic patients.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- How It Works -->
-    <section class="how-it-works">
-      <div class="container">
-        <h2 class="gradient-heading text-center">How It Works</h2>
-        
         <div class="steps">
           <div class="step-item">
             <div class="step-number">1</div>
-            <h3>Enter Personal Details</h3>
-            <p>Age, weight, health conditions, allergies, and budget constraints.</p>
+            <h3>Sign Up</h3>
+            <p>Create your free account and set up your health profile with key health information.</p>
           </div>
-          
           <div class="step-item">
             <div class="step-number">2</div>
-            <h3>Generate Meal Plan</h3>
-            <p>Get a customized, cost-effective meal plan suited to your needs.</p>
+            <h3>Track Your Data</h3>
+            <p>Log your glucose readings, meals, medications, and activities easily.</p>
           </div>
-          
           <div class="step-item">
             <div class="step-number">3</div>
-            <h3>Get Grocery List</h3>
-            <p>Receive an organized shopping list with health tips for each ingredient.</p>
+            <h3>Get Insights</h3>
+            <p>Receive personalized tips and see patterns in your health data.</p>
           </div>
-          
           <div class="step-item">
             <div class="step-number">4</div>
-            <h3>Track & Adjust</h3>
-            <p>Monitor progress and refine your meal plans over time.</p>
+            <h3>Improve Health</h3>
+            <p>Make informed decisions based on your data and improve your diabetes management.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+      <div class="container">
+        <div class="section-header">
+          <h2>What Our Users Say</h2>
+        </div>
+        <div class="testimonial-grid">
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              <p>"DiaBuddy has completely changed how I manage my diabetes. The insights and reminders make it so much easier to stay on top of my health."</p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">
+                <img src="assets/testimonial-1.jpg" alt="Sarah J.">
+              </div>
+              <div class="author-info">
+                <h4>Sarah J.</h4>
+                <p>Living with Type 1 Diabetes for 12 years</p>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              <p>"As a doctor, I recommend DiaBuddy to all my diabetes patients. The comprehensive tracking and data visualization helps them stay engaged with their health."</p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">
+                <img src="assets/testimonial-2.jpg" alt="Dr. Michael R.">
+              </div>
+              <div class="author-info">
+                <h4>Dr. Michael R.</h4>
+                <p>Endocrinologist</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- FAQ Section -->
-    <section class="faq">
+    <section id="faq" class="faq">
       <div class="container">
-        <h2 class="gradient-heading text-center">Frequently Asked Questions</h2>
-        
+        <div class="section-header">
+          <h2>Frequently Asked Questions</h2>
+        </div>
         <div class="faq-grid">
           <div class="faq-card">
-            <h3>Can I customize the meals?</h3>
-            <p>Yes! You can adjust ingredients, swap meals, and set preferences for foods you enjoy or want to avoid.</p>
+            <h3>Is my data private and secure?</h3>
+            <p>Yes, your health data is encrypted and stored securely. We adhere to strict privacy policies and never share your personal information without consent.</p>
           </div>
-          
           <div class="faq-card">
-            <h3>Is this system suitable for other conditions?</h3>
-            <p>While designed primarily for diabetic patients, our system can be helpful for those managing other dietary restrictions with some adjustments.</p>
+            <h3>Can I use DiaBuddy with my glucose monitor?</h3>
+            <p>DiaBuddy works with manual entry from any monitor. We're continually adding direct integration with popular glucose monitoring devices.</p>
           </div>
-          
           <div class="faq-card">
-            <h3>How is cost calculated?</h3>
-            <p>We use average regional grocery prices and seasonal availability to estimate costs, allowing you to set a budget ceiling for your meal plans.</p>
+            <h3>Is DiaBuddy free to use?</h3>
+            <p>DiaBuddy offers a free plan with essential features. Premium features are available with a subscription for more advanced tracking and insights.</p>
           </div>
-          
           <div class="faq-card">
-            <h3>How often should I update my meal plan?</h3>
-            <p>We recommend refreshing your meal plan weekly, but you can generate new plans anytime your health metrics or budget changes.</p>
+            <h3>Can I share my data with my healthcare provider?</h3>
+            <p>Yes, you can generate reports to share with your healthcare team or grant them direct access to your data through our secure sharing features.</p>
           </div>
         </div>
       </div>
@@ -207,36 +217,59 @@
     <!-- CTA Section -->
     <section class="cta">
       <div class="container">
-        <h2 class="gradient-heading">Ready to Transform Your Health?</h2>
-        <p>Try a sample meal plan or sign up for our newsletter to get updates on new features.</p>
-        <div class="button-group">
-          <a href="#" class="button primary-button">Try Demo Now</a>
-          <a href="#" class="button outline-button">Get Sample Meal Plan</a>
-        </div>
+        <h2>Take Control of Your Diabetes Today</h2>
+        <p>Join thousands of users who are effectively managing their diabetes with DiaBuddy.</p>
+        <a href="register.html" class="primary-button">Sign Up Now</a>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer>
+    <footer class="footer">
       <div class="container">
         <div class="footer-content">
-          <div class="footer-logo">
-            <h2 class="gradient-heading">MealPlanPro</h2>
+          <div class="footer-brand">
+            <img src="assets/logo.svg" alt="DiaBuddy" width="40" height="40">
+            <p>DiaBuddy - Your diabetes management companion.</p>
           </div>
           <div class="footer-links">
-            <a href="#">Home</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-            <a href="https://github.com" target="_blank">GitHub</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact Us</a>
           </div>
           <div class="footer-copyright">
-            © 2025 MealPlanPro. All rights reserved.
+            &copy; 2025 DiaBuddy. All rights reserved.
           </div>
         </div>
       </div>
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-header">
+      <div class="logo">
+        <img src="assets/logo.svg" alt="DiaBuddy" width="40" height="40">
+        <span>DiaBuddy</span>
+      </div>
+      <button id="mobile-menu-close" class="mobile-menu-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="mobile-nav">
+      <ul class="mobile-nav-list">
+        <li><a href="#features" class="mobile-nav-link">Features</a></li>
+        <li><a href="#how-it-works" class="mobile-nav-link">How It Works</a></li>
+        <li><a href="#testimonials" class="mobile-nav-link">Testimonials</a></li>
+        <li><a href="#faq" class="mobile-nav-link">FAQ</a></li>
+        <li><a href="login.html" class="mobile-nav-link">Log In</a></li>
+        <li><a href="register.html" class="mobile-nav-link">Sign Up</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/landing.js"></script>
 </body>
 </html>
