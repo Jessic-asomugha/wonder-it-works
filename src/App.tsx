@@ -18,6 +18,7 @@ import MealDetail from "./pages/MealDetail";
 import ChatbotPage from "./pages/ChatbotPage";
 import FeedbackPage from "./pages/FeedbackPage";
 import ActivityPage from "./pages/ActivityPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/chatbot" element={<ChatbotPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/activity" element={<ActivityPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

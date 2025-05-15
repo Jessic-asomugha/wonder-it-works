@@ -1,12 +1,82 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { ChefHat, DollarSign, ShoppingBag, LineChart, BookOpen, Brain, Target, Beaker } from "lucide-react";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section with enhanced design */}
+      {/* Top Navigation */}
+      <header className="border-b border-border py-4">
+        <div className="container max-w-7xl mx-auto px-6 flex justify-between items-center">
+          <div className="text-2xl font-bold gradient-heading">MealPlanPro</div>
+          
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link to="/#about">
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    About
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link to="/#features">
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Features
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    <div>
+                      <NavigationMenuLink asChild>
+                        <Link to="/health-tips" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                          <div className="text-sm font-medium leading-none">Health Tips</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Learn about managing diabetes with our expert tips
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </div>
+                    <div>
+                      <NavigationMenuLink asChild>
+                        <a href="#faq" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                          <div className="text-sm font-medium leading-none">FAQ</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Frequently asked questions about our platform
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
+                    </div>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link to="#contact">
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Contact
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+          
+          <div className="flex gap-4">
+            <Link to="/login">
+              <Button variant="outline" size="sm">Log in</Button>
+            </Link>
+            <Link to="/register">
+              <Button size="sm">Sign up</Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+      
+      {/* Hero Section with enhanced design and new image */}
       <div className="relative bg-gradient-to-b from-accent to-background pt-20 pb-16 md:pt-32 md:pb-24">
         <div className="container max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-12">
@@ -30,7 +100,7 @@ const Index = () => {
               <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/20 via-accent/40 to-background shadow-xl glass-card flex items-center justify-center p-6">
                 <img 
                   src="https://images.unsplash.com/photo-1617196701537-7329482cc9fe?q=80&w=600&auto=format&fit=crop" 
-                  alt="Healthy meal with app UI mockup" 
+                  alt="Healthy diabetic-friendly meal with fresh vegetables" 
                   className="rounded-2xl shadow-lg object-cover w-full h-full"
                 />
               </div>
@@ -104,8 +174,8 @@ const Index = () => {
         </div>
       </div>
       
-      {/* About the System Section */}
-      <div className="py-16 md:py-24 bg-accent/30">
+      {/* About the System Section with new image */}
+      <div id="about" className="py-16 md:py-24 bg-accent/30">
         <div className="container max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center gap-12">
             <div className="flex-1">
@@ -122,8 +192,8 @@ const Index = () => {
             </div>
             <div className="flex-1">
               <img 
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop" 
-                alt="System workflow diagram" 
+                src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop" 
+                alt="Healthy balanced meal with vegetables and protein" 
                 className="rounded-xl shadow-lg w-full"
               />
             </div>
@@ -238,7 +308,7 @@ const Index = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="py-16 md:py-24">
+      <div id="faq" className="py-16 md:py-24">
         <div className="container max-w-7xl mx-auto px-6">
           <h2 className="text-3xl font-bold mb-12 text-center gradient-heading">Frequently Asked Questions</h2>
           
@@ -300,16 +370,26 @@ const Index = () => {
         </div>
       </div>
       
-      {/* Footer with subtle gradient */}
-      <footer className="bg-card py-8 mt-8 border-t border-border">
+      {/* Footer */}
+      <footer id="contact" className="bg-card py-8 mt-8 border-t border-border">
         <div className="container max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="text-2xl font-bold gradient-heading">MealPlanPro</div>
-            <div className="flex gap-6">
-              <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">Home</Link>
-              <Link to="#about" className="text-sm text-muted-foreground hover:text-foreground">About</Link>
-              <Link to="#contact" className="text-sm text-muted-foreground hover:text-foreground">Contact</Link>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground">GitHub</a>
+            <div className="flex flex-col md:flex-row gap-6">
+              <div>
+                <h3 className="text-sm font-medium mb-2">Contact</h3>
+                <p className="text-sm text-muted-foreground">support@mealplanpro.com</p>
+                <p className="text-sm text-muted-foreground">1-800-MEAL-PLAN</p>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium mb-2">Legal</h3>
+                <Link to="/privacy" className="block text-sm text-muted-foreground hover:text-foreground">
+                  Privacy Policy
+                </Link>
+                <Link to="/terms" className="block text-sm text-muted-foreground hover:text-foreground">
+                  Terms of Service
+                </Link>
+              </div>
             </div>
             <div className="text-sm text-muted-foreground">
               © 2025 MealPlanPro. All rights reserved.
