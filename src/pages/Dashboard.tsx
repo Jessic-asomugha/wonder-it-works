@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { MealPlanSection } from "@/components/MealPlanSection";
 import { NutritionStats } from "@/components/NutritionStats";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -12,29 +12,81 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MainLayout } from "@/components/MainLayout";
+import { useAuth } from "@/hooks/useAuth";
+import { useState, useEffect } from "react";
 
 const Dashboard = () => {
-  // Mock user data for the dashboard components
-  const userData = {
-    name: "John Doe",
-    age: 42,
-    height: 175, // in cm
-    weight: 78, // in kg
-    diabetesType: "Type 2",
+  const { user, getUserProfile } = useAuth();
+  const [userData, setUserData] = useState({
+    name: "",
+    age: 0,
+    height: 0,
+    weight: 0,
+    diabetesType: "",
     calorieTarget: 2000,
     gender: "male",
     budget: {
       weekly: 150,
       currency: "$"
     }
-  };
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await getUserProfile();
+        
+        if (error) {
+          console.error("Error fetching user profile:", error);
+          return;
+        }
+        
+        if (data) {
+          setUserData({
+            name: data.name || "User",
+            age: data.age || 30,
+            height: data.height || 170,
+            weight: data.weight || 70,
+            diabetesType: data.diabetes_type || "Type 2",
+            calorieTarget: data.max_calories || 2000,
+            gender: data.gender || "male",
+            budget: {
+              weekly: data.weekly_budget || 150,
+              currency: "$"
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadUserData();
+  }, [user, getUserProfile]);
+
+  if (isLoading) {
+    return (
+      <MainLayout>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </MainLayout>
+    );
+  }
+
+  const firstName = userData.name.split(' ')[0];
 
   return (
     <MainLayout>
       {/* Welcome Section - Simplified */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-slate-800">
-          Welcome back, <span className="text-primary">John!</span>
+          Welcome back, <span className="text-primary">{firstName || "User"}!</span>
         </h2>
         <p className="text-sm text-slate-500">
           Here's your personalized meal planning dashboard

@@ -9,12 +9,12 @@ interface AuthContextProps {
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{
+    data: { user: User | null; session: Session | null } | null;
     error: Error | null;
-    data: Session | null;
   }>;
   signUp: (email: string, password: string) => Promise<{
+    data: { user: User | null; session: Session | null } | null;
     error: Error | null;
-    data: { user: User | null; session: Session | null };
   }>;
   signOut: () => Promise<{ error: Error | null }>;
   updateProfile: (data: any) => Promise<{ error: Error | null; data: any }>;
@@ -60,18 +60,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [navigate]);
 
   const signIn = async (email: string, password: string) => {
-    const result = await supabase.auth.signInWithPassword({ email, password });
-    return result;
+    try {
+      const result = await supabase.auth.signInWithPassword({ email, password });
+      return {
+        data: result.data,
+        error: result.error as Error | null
+      };
+    } catch (err) {
+      return { data: null, error: err as Error };
+    }
   };
 
   const signUp = async (email: string, password: string) => {
-    const result = await supabase.auth.signUp({ email, password });
-    return result;
+    try {
+      const result = await supabase.auth.signUp({ email, password });
+      return {
+        data: result.data,
+        error: result.error as Error | null
+      };
+    } catch (err) {
+      return { data: null, error: err as Error };
+    }
   };
 
   const signOut = async () => {
     const result = await supabase.auth.signOut();
-    return result;
+    return { error: result.error as Error | null };
   };
 
   const updateProfile = async (data: any) => {

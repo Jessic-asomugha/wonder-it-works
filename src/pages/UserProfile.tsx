@@ -8,25 +8,26 @@ import { Button } from "@/components/ui/button";
 import UserProfileHeader from "@/components/UserProfileHeader";
 import { useState } from "react";
 
-// Define user data interface
+// Define user data interface to match UserProfileData in UserProfileForm
 interface UserData {
   id: string;
   name: string;
   email: string;
   username: string;
-  avatar: string;
+  avatar_url: string;
   role: string;
-  diabetesType: string;
-  dateJoined: string;
+  diabetes_type: string;
+  date_joined: string;
   bio: string;
-  age?: string;
-  gender?: string;
-  height?: string;
-  weight?: string;
-  activityLevel?: string;
-  weeklyBudget?: string;
-  dietaryRestrictions?: string;
-  foodPreferences?: string;
+  age: number | null;
+  gender: string;
+  height: number | null;
+  weight: number | null;
+  activity_level: string;
+  weekly_budget: number | null;
+  dietary_restrictions: string;
+  food_preferences: string;
+  max_calories: number | null;
   preferences: {
     theme: string;
     notifications: boolean;
@@ -50,11 +51,20 @@ const UserProfile = () => {
     name: "",
     email: "",
     username: "",
-    avatar: "",
+    avatar_url: "",
     role: "",
-    diabetesType: "",
-    dateJoined: new Date().toISOString().split('T')[0],
+    diabetes_type: "",
+    date_joined: new Date().toISOString().split('T')[0],
     bio: "",
+    age: null,
+    gender: "",
+    height: null,
+    weight: null,
+    activity_level: "",
+    weekly_budget: null,
+    dietary_restrictions: "",
+    food_preferences: "",
+    max_calories: null,
     preferences: {
       theme: "light",
       notifications: true,
@@ -67,7 +77,7 @@ const UserProfile = () => {
     },
   });
 
-  const handleSaveProfile = (newProfileData) => {
+  const handleSaveProfile = (newProfileData: any) => {
     setUserData({...userData, ...newProfileData});
     setProfileSetup(true);
     setIsEditMode(false);

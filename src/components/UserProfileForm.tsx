@@ -26,6 +26,7 @@ interface UserProfileData {
   dietary_restrictions: string;
   food_preferences: string;
   bio: string;
+  max_calories: number | null;
 }
 
 interface UserProfileFormProps {
@@ -52,6 +53,7 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
     dietary_restrictions: initialData.dietary_restrictions || "",
     food_preferences: initialData.food_preferences || "",
     bio: initialData.bio || "",
+    max_calories: initialData.max_calories || 1500,
   });
   
   // Fetch user profile data on component mount
@@ -82,6 +84,7 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
             dietary_restrictions: data.dietary_restrictions || "",
             food_preferences: data.food_preferences || "",
             bio: data.bio || "",
+            max_calories: data.max_calories !== null ? Number(data.max_calories) : 1500,
           });
         }
       } catch (error) {
@@ -328,6 +331,21 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
                   <option value="active">Very Active</option>
                   <option value="extra_active">Extra Active</option>
                 </select>
+              </div>
+
+              {/* Max Calories field */}
+              <div className="space-y-2">
+                <Label htmlFor="max_calories" className="text-slate-700">Max Calories per Day</Label>
+                <Input 
+                  id="max_calories" 
+                  name="max_calories" 
+                  type="number" 
+                  min="500" 
+                  value={formData.max_calories || 1500} 
+                  onChange={handleInputChange} 
+                  required 
+                  className="border-slate-200 focus:border-primary"
+                />
               </div>
             </div>
           </div>
