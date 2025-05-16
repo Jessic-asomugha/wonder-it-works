@@ -9,7 +9,278 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      glucose_readings: {
+        Row: {
+          id: string
+          meal_id: string | null
+          meal_related: boolean | null
+          notes: string | null
+          reading_time: string | null
+          reading_value: number
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          meal_id?: string | null
+          meal_related?: boolean | null
+          notes?: string | null
+          reading_time?: string | null
+          reading_value: number
+          user_id: string
+        }
+        Update: {
+          id?: string
+          meal_id?: string | null
+          meal_related?: boolean | null
+          notes?: string | null
+          reading_time?: string | null
+          reading_value?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "glucose_readings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      health_insights: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          insight_type: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          insight_type: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          insight_type?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_insights_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meal_plan_items: {
+        Row: {
+          day_of_week: number
+          id: string
+          meal_plan_id: string
+          meal_type: string
+          notes: string | null
+          recipe_id: string | null
+        }
+        Insert: {
+          day_of_week: number
+          id?: string
+          meal_plan_id: string
+          meal_type: string
+          notes?: string | null
+          recipe_id?: string | null
+        }
+        Update: {
+          day_of_week?: number
+          id?: string
+          meal_plan_id?: string
+          meal_type?: string
+          notes?: string | null
+          recipe_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meal_plan_items_meal_plan_id_fkey"
+            columns: ["meal_plan_id"]
+            isOneToOne: false
+            referencedRelation: "meal_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meal_plan_items_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meal_plans: {
+        Row: {
+          created_at: string | null
+          end_date: string
+          id: string
+          name: string
+          start_date: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          end_date: string
+          id?: string
+          name: string
+          start_date: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          end_date?: string
+          id?: string
+          name?: string
+          start_date?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meal_plans_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          activity_level: string | null
+          age: number | null
+          avatar_url: string | null
+          bio: string | null
+          date_joined: string | null
+          diabetes_type: string | null
+          dietary_restrictions: string | null
+          email: string | null
+          food_preferences: string | null
+          gender: string | null
+          height: number | null
+          id: string
+          name: string | null
+          role: string | null
+          username: string | null
+          weekly_budget: number | null
+          weight: number | null
+        }
+        Insert: {
+          activity_level?: string | null
+          age?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          date_joined?: string | null
+          diabetes_type?: string | null
+          dietary_restrictions?: string | null
+          email?: string | null
+          food_preferences?: string | null
+          gender?: string | null
+          height?: number | null
+          id: string
+          name?: string | null
+          role?: string | null
+          username?: string | null
+          weekly_budget?: number | null
+          weight?: number | null
+        }
+        Update: {
+          activity_level?: string | null
+          age?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          date_joined?: string | null
+          diabetes_type?: string | null
+          dietary_restrictions?: string | null
+          email?: string | null
+          food_preferences?: string | null
+          gender?: string | null
+          height?: number | null
+          id?: string
+          name?: string | null
+          role?: string | null
+          username?: string | null
+          weekly_budget?: number | null
+          weight?: number | null
+        }
+        Relationships: []
+      }
+      recipes: {
+        Row: {
+          cook_time: number | null
+          created_at: string | null
+          description: string | null
+          diabetes_friendly: boolean | null
+          id: string
+          image_url: string | null
+          ingredients: Json
+          instructions: string
+          name: string
+          nutrition_info: Json | null
+          prep_time: number | null
+          servings: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cook_time?: number | null
+          created_at?: string | null
+          description?: string | null
+          diabetes_friendly?: boolean | null
+          id?: string
+          image_url?: string | null
+          ingredients: Json
+          instructions: string
+          name: string
+          nutrition_info?: Json | null
+          prep_time?: number | null
+          servings?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cook_time?: number | null
+          created_at?: string | null
+          description?: string | null
+          diabetes_friendly?: boolean | null
+          id?: string
+          image_url?: string | null
+          ingredients?: Json
+          instructions?: string
+          name?: string
+          nutrition_info?: Json | null
+          prep_time?: number | null
+          servings?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

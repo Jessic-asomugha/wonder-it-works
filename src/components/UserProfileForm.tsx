@@ -1,26 +1,30 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/sonner";
+import { Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { Tables } from "@/integrations/supabase/types";
 
-// Define proper types for the user profile data
+type ProfileRow = Tables<"profiles">;
+
 interface UserProfileData {
   name: string;
   email: string;
   username: string;
-  age: string;
+  age: number | null;
   gender: string;
-  height: string;
-  weight: string;
-  diabetesType: string;
-  activityLevel: string;
-  weeklyBudget: string;
-  dietaryRestrictions: string;
-  foodPreferences: string;
+  height: number | null;
+  weight: number | null;
+  diabetes_type: string;
+  activity_level: string;
+  weekly_budget: number | null;
+  dietary_restrictions: string;
+  food_preferences: string;
   bio: string;
 }
 
@@ -30,38 +34,123 @@ interface UserProfileFormProps {
 }
 
 export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormProps) => {
+  const { updateProfile, getUserProfile, user } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  
   const [formData, setFormData] = useState<UserProfileData>({
     name: initialData.name || "",
     email: initialData.email || "",
     username: initialData.username || "",
-    age: initialData.age || "",
+    age: initialData.age || null,
     gender: initialData.gender || "",
-    height: initialData.height || "",
-    weight: initialData.weight || "",
-    diabetesType: initialData.diabetesType || "none",
-    activityLevel: initialData.activityLevel || "moderate",
-    weeklyBudget: initialData.weeklyBudget || "",
-    dietaryRestrictions: initialData.dietaryRestrictions || "",
-    foodPreferences: initialData.foodPreferences || "",
+    height: initialData.height || null,
+    weight: initialData.weight || null,
+    diabetes_type: initialData.diabetes_type || "none",
+    activity_level: initialData.activity_level || "moderate",
+    weekly_budget: initialData.weekly_budget || null,
+    dietary_restrictions: initialData.dietary_restrictions || "",
+    food_preferences: initialData.food_preferences || "",
     bio: initialData.bio || "",
   });
   
+  // Fetch user profile data on component mount
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      setIsLoading(true);
+      
+      try {
+        const { error, data } = await getUserProfile();
+        
+        if (error) {
+          toast.error("Error fetching profile", {
+            description: error.message,
+          });
+        } else if (data) {
+          // Convert data types to match form structure
+          setFormData({
+            name: data.name || "",
+            email: data.email || "",
+            username: data.username || "",
+            age: data.age !== null ? Number(data.age) : null,
+            gender: data.gender || "",
+            height: data.height !== null ? Number(data.height) : null,
+            weight: data.weight !== null ? Number(data.weight) : null,
+            diabetes_type: data.diabetes_type || "none",
+            activity_level: data.activity_level || "moderate",
+            weekly_budget: data.weekly_budget !== null ? Number(data.weekly_budget) : null,
+            dietary_restrictions: data.dietary_restrictions || "",
+            food_preferences: data.food_preferences || "",
+            bio: data.bio || "",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        toast.error("Failed to load profile data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    if (user) {
+      fetchUserProfile();
+    }
+  }, [getUserProfile, user]);
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    
+    let parsedValue: string | number | null = value;
+    
+    // Parse numeric inputs
+    if (type === 'number' && value !== '') {
+      parsedValue = parseFloat(value);
+    } else if (type === 'number' && value === '') {
+      parsedValue = null;
+    }
+    
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: parsedValue,
     }));
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would save the data to a backend
-    onSave(formData);
-    toast.success("Profile updated successfully", {
-      description: "Your meal plan will be customized based on your profile",
-    });
+    setIsSaving(true);
+    
+    try {
+      const { error } = await updateProfile(formData);
+      
+      if (error) {
+        toast.error("Failed to update profile", {
+          description: error.message,
+        });
+      } else {
+        toast.success("Profile updated successfully", {
+          description: "Your meal plan will be customized based on your profile",
+        });
+        onSave(formData);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("An unexpected error occurred", {
+        description: "Please try again later",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
+  
+  if (isLoading) {
+    return (
+      <Card className="w-full max-w-3xl mx-auto bg-white shadow-md border-none">
+        <CardContent className="pt-6 flex justify-center items-center min-h-[300px]">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-3xl mx-auto bg-white shadow-md border-none">
@@ -128,7 +217,7 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
                   type="number" 
                   min="0" 
                   max="120" 
-                  value={formData.age} 
+                  value={formData.age || ''} 
                   onChange={handleInputChange} 
                   required 
                   className="border-slate-200 focus:border-primary"
@@ -181,7 +270,7 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
                   name="height" 
                   type="number" 
                   min="0" 
-                  value={formData.height} 
+                  value={formData.height || ''} 
                   onChange={handleInputChange} 
                   required 
                   className="border-slate-200 focus:border-primary"
@@ -196,7 +285,7 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
                   name="weight" 
                   type="number" 
                   min="0" 
-                  value={formData.weight} 
+                  value={formData.weight || ''} 
                   onChange={handleInputChange} 
                   required 
                   className="border-slate-200 focus:border-primary"
@@ -205,12 +294,12 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
               
               {/* Diabetes Type dropdown */}
               <div className="space-y-2">
-                <Label htmlFor="diabetesType" className="text-slate-700">Diabetes Type</Label>
+                <Label htmlFor="diabetes_type" className="text-slate-700">Diabetes Type</Label>
                 <select 
-                  id="diabetesType"
-                  name="diabetesType"
+                  id="diabetes_type"
+                  name="diabetes_type"
                   className="flex h-10 w-full rounded-md border border-slate-200 bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  value={formData.diabetesType}
+                  value={formData.diabetes_type}
                   onChange={handleInputChange}
                   required
                 >
@@ -224,12 +313,12 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
               
               {/* Activity Level dropdown */}
               <div className="space-y-2">
-                <Label htmlFor="activityLevel" className="text-slate-700">Activity Level</Label>
+                <Label htmlFor="activity_level" className="text-slate-700">Activity Level</Label>
                 <select 
-                  id="activityLevel"
-                  name="activityLevel"
+                  id="activity_level"
+                  name="activity_level"
                   className="flex h-10 w-full rounded-md border border-slate-200 bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  value={formData.activityLevel}
+                  value={formData.activity_level}
                   onChange={handleInputChange}
                   required
                 >
@@ -250,13 +339,13 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
             <div className="grid grid-cols-1 gap-6">
               {/* Weekly Budget field */}
               <div className="space-y-2">
-                <Label htmlFor="weeklyBudget" className="text-slate-700">Weekly Food Budget ($)</Label>
+                <Label htmlFor="weekly_budget" className="text-slate-700">Weekly Food Budget ($)</Label>
                 <Input 
-                  id="weeklyBudget" 
-                  name="weeklyBudget" 
+                  id="weekly_budget" 
+                  name="weekly_budget" 
                   type="number" 
                   min="0" 
-                  value={formData.weeklyBudget} 
+                  value={formData.weekly_budget || ''} 
                   onChange={handleInputChange} 
                   required 
                   className="border-slate-200 focus:border-primary"
@@ -265,12 +354,12 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
               
               {/* Dietary Restrictions field */}
               <div className="space-y-2">
-                <Label htmlFor="dietaryRestrictions" className="text-slate-700">Dietary Restrictions</Label>
+                <Label htmlFor="dietary_restrictions" className="text-slate-700">Dietary Restrictions</Label>
                 <Textarea 
-                  id="dietaryRestrictions" 
-                  name="dietaryRestrictions" 
+                  id="dietary_restrictions" 
+                  name="dietary_restrictions" 
                   placeholder="E.g., vegetarian, gluten-free, allergies, etc."
-                  value={formData.dietaryRestrictions} 
+                  value={formData.dietary_restrictions} 
                   onChange={handleInputChange} 
                   className="border-slate-200 focus:border-primary"
                 />
@@ -278,12 +367,12 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
               
               {/* Food Preferences field */}
               <div className="space-y-2">
-                <Label htmlFor="foodPreferences" className="text-slate-700">Food Preferences</Label>
+                <Label htmlFor="food_preferences" className="text-slate-700">Food Preferences</Label>
                 <Textarea 
-                  id="foodPreferences" 
-                  name="foodPreferences" 
+                  id="food_preferences" 
+                  name="food_preferences" 
                   placeholder="Foods you enjoy or dislike"
-                  value={formData.foodPreferences} 
+                  value={formData.food_preferences} 
                   onChange={handleInputChange} 
                   className="border-slate-200 focus:border-primary"
                 />
@@ -294,7 +383,20 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
         
         <CardFooter className="flex justify-between bg-slate-50 px-6 py-4 border-t">
           <Button type="button" variant="outline">Cancel</Button>
-          <Button type="submit" className="bg-primary hover:bg-primary/90">Save Profile</Button>
+          <Button 
+            type="submit" 
+            className="bg-primary hover:bg-primary/90"
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save Profile"
+            )}
+          </Button>
         </CardFooter>
       </form>
     </Card>
