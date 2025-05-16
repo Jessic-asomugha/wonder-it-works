@@ -8,13 +8,44 @@ import { Button } from "@/components/ui/button";
 import UserProfileHeader from "@/components/UserProfileHeader";
 import { useState } from "react";
 
+// Define user data interface
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  username: string;
+  avatar: string;
+  role: string;
+  diabetesType: string;
+  dateJoined: string;
+  bio: string;
+  age?: string;
+  gender?: string;
+  height?: string;
+  weight?: string;
+  activityLevel?: string;
+  weeklyBudget?: string;
+  dietaryRestrictions?: string;
+  foodPreferences?: string;
+  preferences: {
+    theme: string;
+    notifications: boolean;
+    emailUpdates: boolean;
+  };
+  stats: {
+    recipesCreated: number;
+    mealPlansGenerated: number;
+    streakDays: number;
+  };
+}
+
 const UserProfile = () => {
   // State to track if user has set up their profile
   const [profileSetup, setProfileSetup] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   
   // Mock user data - would come from a database in a real app
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<UserData>({
     id: "",
     name: "",
     email: "",

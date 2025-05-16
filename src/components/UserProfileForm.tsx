@@ -7,8 +7,30 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/sonner";
 
-export const UserProfileForm = ({ onSave, initialData = {} }) => {
-  const [formData, setFormData] = useState({
+// Define proper types for the user profile data
+interface UserProfileData {
+  name: string;
+  email: string;
+  username: string;
+  age: string;
+  gender: string;
+  height: string;
+  weight: string;
+  diabetesType: string;
+  activityLevel: string;
+  weeklyBudget: string;
+  dietaryRestrictions: string;
+  foodPreferences: string;
+  bio: string;
+}
+
+interface UserProfileFormProps {
+  onSave: (data: UserProfileData) => void;
+  initialData?: Partial<UserProfileData>;
+}
+
+export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormProps) => {
+  const [formData, setFormData] = useState<UserProfileData>({
     name: initialData.name || "",
     email: initialData.email || "",
     username: initialData.username || "",
