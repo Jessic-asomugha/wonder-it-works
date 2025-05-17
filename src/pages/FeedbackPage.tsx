@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Star, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 interface FeedbackItem {
@@ -34,16 +33,13 @@ const FeedbackPage = () => {
       setIsLoading(true);
       try {
         // In a real implementation, you'd fetch from your feedback table in Supabase
-        // This is simulating that with a delay
+        // For now, we'll get from localStorage
         setTimeout(() => {
-          // For now, use mock data
-          // In a real app, this would be:
-          // const { data, error } = await supabase.from('meal_feedback').select('*').eq('user_id', user.id);
           const mockData = localStorage.getItem('feedbackHistory');
           const parsedData = mockData ? JSON.parse(mockData) : [];
           setFeedbackHistory(parsedData);
           setIsLoading(false);
-        }, 800);
+        }, 500);
         
       } catch (error) {
         console.error("Error fetching feedback history:", error);
@@ -73,8 +69,7 @@ const FeedbackPage = () => {
       return;
     }
 
-    // In a real implementation, you'd save to your Supabase table
-    // For now, we'll save to localStorage to demonstrate the functionality
+    // Save to localStorage (would be Supabase in a real app)
     const newFeedback: FeedbackItem = {
       id: Date.now(),
       mealName: "Overall Experience",
@@ -148,7 +143,10 @@ const FeedbackPage = () => {
               </div>
             ) : (
               <div className="text-center py-10 text-slate-500">
-                <p>You haven't provided any feedback yet.</p>
+                <p className="mb-4">You haven't provided any feedback yet.</p>
+                <Button variant="outline" onClick={() => setActiveTab("new")}>
+                  Share Your First Feedback
+                </Button>
               </div>
             )}
           </TabsContent>

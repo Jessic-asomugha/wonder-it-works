@@ -36,6 +36,15 @@ export function MealFeedbackDialog({
   const { toast } = useToast();
 
   const handleSubmit = () => {
+    if (rating === 0) {
+      toast({
+        title: "Please add a rating",
+        description: "Select a star rating for this meal.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // In a real app, this would send data to a backend
     console.log("Submitting feedback:", {
       mealId,
@@ -43,6 +52,38 @@ export function MealFeedbackDialog({
       rating,
       comment,
     });
+
+    // Save to feedback history
+    const feedback = {
+      id: Date.now(),
+      mealName,
+      rating,
+      comment,
+      date: new Date().toISOString().split('T')[0]
+    };
+    
+    const existingFeedback = localStorage.getItem('feedbackHistory');
+    const feedbackHistory = existingFeedback ? JSON.parse(existingFeedback) : [];
+    feedbackHistory.unshift(feedback);
+    localStorage.setItem('feedbackHistory', JSON.stringify(feedbackHistory));
+    
+    // Update the logged meal in localStorage to indicate it has feedback
+    const savedMeals = localStorage.getItem('loggedMeals');
+    if (savedMeals) {
+      const meals = JSON.parse(savedMeals);
+      const updatedMeals = meals.map((meal: any) => {
+        if (meal && meal.id === mealId) {
+          return {
+            ...meal,
+            hasFeedback: true,
+            rating,
+            comment
+          };
+        }
+        return meal;
+      });
+      localStorage.setItem('loggedMeals', JSON.stringify(updatedMeals));
+    }
 
     toast({
       title: "Feedback submitted",
@@ -162,4 +203,4 @@ export function MealFeedbackDialog({
       </DialogContent>
     </Dialog>
   );
-}
+};
