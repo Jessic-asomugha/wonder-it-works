@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,11 +29,11 @@ interface UserProfileData {
 }
 
 interface UserProfileFormProps {
-  onSave: (data: UserProfileData) => void;
+  onSubmit: (data: UserProfileData) => void;
   initialData?: Partial<UserProfileData>;
 }
 
-export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormProps) => {
+export const UserProfileForm = ({ onSubmit, initialData = {} }: UserProfileFormProps) => {
   const { updateProfile, getUserProfile, user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -133,7 +132,7 @@ export const UserProfileForm = ({ onSave, initialData = {} }: UserProfileFormPro
         toast.success("Profile updated successfully", {
           description: "Your meal plan will be customized based on your profile",
         });
-        onSave(formData);
+        onSubmit(formData);
       }
     } catch (error) {
       console.error("Error updating profile:", error);

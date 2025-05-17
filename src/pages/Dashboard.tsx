@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { MealPlanSection } from "@/components/MealPlanSection";
 import { NutritionStats } from "@/components/NutritionStats";
-import { PlusCircle, Loader2, ArrowRight } from "lucide-react";
+import { PlusCircle, Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -54,13 +53,14 @@ const Dashboard = () => {
         }
         
         if (data) {
+          const diabetesType = data.diabetes_type || "Type 2";
           setUserData({
             name: data.name || "User",
             age: data.age || 30,
             height: data.height || 170,
             weight: data.weight || 70,
-            diabetes_type: data.diabetes_type || "Type 2",
-            diabetesType: data.diabetes_type || "Type 2", // Set both properties to match
+            diabetes_type: diabetesType,
+            diabetesType: diabetesType, // Set both properties to match
             calorieTarget: data.max_calories || 2000,
             gender: data.gender || "male",
             budget: {

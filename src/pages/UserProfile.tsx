@@ -136,6 +136,7 @@ const UserProfile = () => {
           <Card>
             <UserProfileForm 
               onSubmit={handleUpdateProfile}
+              initialData={userData}
             />
           </Card>
         </TabsContent>
