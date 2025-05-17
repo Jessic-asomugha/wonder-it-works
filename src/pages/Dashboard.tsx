@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { MealPlanSection } from "@/components/MealPlanSection";
 import { NutritionStats } from "@/components/NutritionStats";
-import { PlusCircle, Loader2 } from "lucide-react";
+import { PlusCircle, Loader2, ArrowRight } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -14,6 +14,7 @@ import {
 import { MainLayout } from "@/components/MainLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
   const { user, getUserProfile } = useAuth();
@@ -22,7 +23,7 @@ const Dashboard = () => {
     age: 0,
     height: 0,
     weight: 0,
-    diabetesType: "",
+    diabetes_type: "",
     calorieTarget: 2000,
     gender: "male",
     budget: {
@@ -31,6 +32,13 @@ const Dashboard = () => {
     }
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [nutrientData, setNutrientData] = useState({
+    calories: { total: 0, target: 2000, percent: 0 },
+    carbs: { total: 0, target: 200, percent: 0 },
+    protein: { total: 0, target: 100, percent: 0 },
+    fat: { total: 0, target: 60, percent: 0 }
+  });
+  const [mealPlanGenerated, setMealPlanGenerated] = useState(false);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -50,7 +58,7 @@ const Dashboard = () => {
             age: data.age || 30,
             height: data.height || 170,
             weight: data.weight || 70,
-            diabetesType: data.diabetes_type || "Type 2",
+            diabetes_type: data.diabetes_type || "Type 2",
             calorieTarget: data.max_calories || 2000,
             gender: data.gender || "male",
             budget: {
@@ -68,6 +76,36 @@ const Dashboard = () => {
     
     loadUserData();
   }, [user, getUserProfile]);
+
+  // Add a new effect to listen for mealPlan changes
+  useEffect(() => {
+    const fetchMealPlanNutrients = async () => {
+      if (!user) return;
+      
+      try {
+        // This is just a placeholder. The actual nutrient data will come from the MealPlanSection component.
+        // We'll create a proper state management solution in a future update.
+        const channel = supabase
+          .channel('custom-update-channel')
+          .on('broadcast', { event: 'meal-plan-updated' }, (payload) => {
+            if (payload.payload && payload.payload.nutrients) {
+              const nutrients = payload.payload.nutrients;
+              setNutrientData(nutrients);
+              setMealPlanGenerated(true);
+            }
+          })
+          .subscribe();
+          
+        return () => {
+          supabase.removeChannel(channel);
+        };
+      } catch (error) {
+        console.error("Error setting up meal plan listener:", error);
+      }
+    };
+    
+    fetchMealPlanNutrients();
+  }, [user]);
 
   if (isLoading) {
     return (
@@ -126,10 +164,12 @@ const Dashboard = () => {
               <CardTitle className="text-base font-medium">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="pt-0 space-y-2">
-              <Button variant="outline" className="w-full justify-start text-sm h-9">
-                <PlusCircle className="h-3.5 w-3.5 mr-2 text-primary" />
-                Log Glucose Level
-              </Button>
+              <Link to="/glucose-monitoring">
+                <Button variant="outline" className="w-full justify-start text-sm h-9">
+                  <PlusCircle className="h-3.5 w-3.5 mr-2 text-primary" />
+                  Log Glucose Level
+                </Button>
+              </Link>
               <Button variant="outline" className="w-full justify-start text-sm h-9">
                 <PlusCircle className="h-3.5 w-3.5 mr-2 text-primary" />
                 Add Meal
@@ -150,46 +190,76 @@ const Dashboard = () => {
               <div className="space-y-2.5">
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Calories</span>
-                  <span className="font-medium">{userData.calorieTarget} kcal</span>
+                  <span className="font-medium">
+                    {mealPlanGenerated ? 
+                      `${nutrientData.calories.total} / ${nutrientData.calories.target} kcal` : 
+                      `${userData.calorieTarget} kcal`}
+                  </span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
-                  <div className="bg-primary h-1.5 rounded-full" style={{ width: "65%" }}></div>
+                  <div 
+                    className="bg-primary h-1.5 rounded-full" 
+                    style={{ width: `${mealPlanGenerated ? nutrientData.calories.percent : 65}%` }}
+                  ></div>
                 </div>
               </div>
               
               <div className="space-y-2.5">
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Carbs</span>
-                  <span className="font-medium">200g</span>
+                  <span className="font-medium">
+                    {mealPlanGenerated ? 
+                      `${nutrientData.carbs.total}g / ${nutrientData.carbs.target}g` : 
+                      "200g"}
+                  </span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
-                  <div className="bg-blue-400 h-1.5 rounded-full" style={{ width: "40%" }}></div>
+                  <div 
+                    className="bg-blue-400 h-1.5 rounded-full" 
+                    style={{ width: `${mealPlanGenerated ? nutrientData.carbs.percent : 40}%` }}
+                  ></div>
                 </div>
               </div>
               
               <div className="space-y-2.5">
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Protein</span>
-                  <span className="font-medium">100g</span>
+                  <span className="font-medium">
+                    {mealPlanGenerated ? 
+                      `${nutrientData.protein.total}g / ${nutrientData.protein.target}g` : 
+                      "100g"}
+                  </span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
-                  <div className="bg-amber-400 h-1.5 rounded-full" style={{ width: "75%" }}></div>
+                  <div 
+                    className="bg-amber-400 h-1.5 rounded-full" 
+                    style={{ width: `${mealPlanGenerated ? nutrientData.protein.percent : 75}%` }}
+                  ></div>
                 </div>
               </div>
               
               <div className="space-y-2.5">
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Fat</span>
-                  <span className="font-medium">60g</span>
+                  <span className="font-medium">
+                    {mealPlanGenerated ? 
+                      `${nutrientData.fat.total}g / ${nutrientData.fat.target}g` : 
+                      "60g"}
+                  </span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
-                  <div className="bg-rose-400 h-1.5 rounded-full" style={{ width: "50%" }}></div>
+                  <div 
+                    className="bg-rose-400 h-1.5 rounded-full" 
+                    style={{ width: `${mealPlanGenerated ? nutrientData.fat.percent : 50}%` }}
+                  ></div>
                 </div>
               </div>
               
-              <Button variant="secondary" size="sm" className="w-full text-xs">
-                Full Nutrition Report
-              </Button>
+              <Link to="/analytics">
+                <Button variant="secondary" size="sm" className="w-full text-xs">
+                  Full Nutrition Report
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 

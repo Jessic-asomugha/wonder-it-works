@@ -1,67 +1,247 @@
 
+import { useEffect, useState } from "react";
 import { MainLayout } from "@/components/MainLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
-import { Download, Calendar, Activity, Heart, Apple, Utensils } from "lucide-react";
+import { Download, Calendar, Activity, Heart, Apple, Utensils, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/components/ui/sonner";
 
-const glucoseData = [
-  { date: 'Mon', value: 110, target: 100 },
-  { date: 'Tue', value: 125, target: 100 },
-  { date: 'Wed', value: 115, target: 100 },
-  { date: 'Thu', value: 105, target: 100 },
-  { date: 'Fri', value: 130, target: 100 },
-  { date: 'Sat', value: 120, target: 100 },
-  { date: 'Sun', value: 118, target: 100 },
-];
+interface GlucoseReading {
+  id: string;
+  reading_value: number;
+  reading_time: string;
+  notes?: string;
+  meal_related?: boolean;
+}
 
-const mealData = [
-  { name: 'Carbs', value: 45 },
-  { name: 'Protein', value: 30 },
-  { name: 'Fats', value: 15 },
-  { name: 'Fiber', value: 10 },
-];
+interface NutrientData {
+  name: string;
+  value: number;
+}
 
-const activityData = [
-  { date: 'Mon', minutes: 15 },
-  { date: 'Tue', minutes: 30 },
-  { date: 'Wed', minutes: 45 },
-  { date: 'Thu', minutes: 20 },
-  { date: 'Fri', minutes: 35 },
-  { date: 'Sat', minutes: 60 },
-  { date: 'Sun', minutes: 25 },
-];
+interface HealthInsight {
+  title: string;
+  description: string;
+  icon: any;
+}
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-const healthInsights = [
-  {
-    title: "Blood Sugar Patterns",
-    description: "Your glucose levels tend to peak after lunch. Consider adjusting your carb intake during midday meals.",
-    icon: Heart
-  },
-  {
-    title: "Nutrition Balance",
-    description: "Your protein intake is below recommended levels. Try incorporating more lean protein sources in your meals.",
-    icon: Apple
-  },
-  {
-    title: "Activity Impact",
-    description: "On days with 30+ minutes of activity, your glucose levels stay within target range more consistently.",
-    icon: Activity
-  },
-  {
-    title: "Meal Timing",
-    description: "Eating regular meals every 4-5 hours appears to help stabilize your glucose levels throughout the day.",
-    icon: Utensils
-  }
-];
-
 const AnalyticsPage = () => {
+  const { user } = useAuth();
   const [timeRange, setTimeRange] = useState("week");
+  const [isLoading, setIsLoading] = useState(true);
+  const [glucoseData, setGlucoseData] = useState<any[]>([]);
+  const [mealData, setMealData] = useState<NutrientData[]>([
+    { name: 'Carbs', value: 0 },
+    { name: 'Protein', value: 0 },
+    { name: 'Fats', value: 0 },
+    { name: 'Fiber', value: 0 },
+  ]);
+  const [activityData, setActivityData] = useState<any[]>([]);
+  const [healthInsights, setHealthInsights] = useState<HealthInsight[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    // Function to fetch glucose data
+    const fetchGlucoseData = async () => {
+      setIsLoading(true);
+      try {
+        let query = supabase
+          .from('glucose_readings')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('reading_time', { ascending: true });
+          
+        // Apply time range filter
+        const now = new Date();
+        let startDate;
+        
+        switch (timeRange) {
+          case 'week':
+            startDate = new Date(now);
+            startDate.setDate(now.getDate() - 7);
+            query = query.gte('reading_time', startDate.toISOString());
+            break;
+          case 'month':
+            startDate = new Date(now);
+            startDate.setMonth(now.getMonth() - 1);
+            query = query.gte('reading_time', startDate.toISOString());
+            break;
+          case 'quarter':
+            startDate = new Date(now);
+            startDate.setMonth(now.getMonth() - 3);
+            query = query.gte('reading_time', startDate.toISOString());
+            break;
+        }
+        
+        const { data, error } = await query;
+        
+        if (error) {
+          console.error("Error fetching glucose data:", error);
+          toast.error("Failed to load glucose data");
+          return;
+        }
+        
+        if (data && data.length > 0) {
+          // Process the data for the chart by day
+          const chartData = processGlucoseDataByDay(data);
+          setGlucoseData(chartData);
+          
+          // Generate insights based on the glucose data
+          const insights = generateInsights(data);
+          setHealthInsights(insights);
+        } else {
+          // Use placeholder data if no data exists
+          setGlucoseData([
+            { date: 'Mon', value: 110, target: 100 },
+            { date: 'Tue', value: 125, target: 100 },
+            { date: 'Wed', value: 115, target: 100 },
+            { date: 'Thu', value: 105, target: 100 },
+            { date: 'Fri', value: 130, target: 100 },
+            { date: 'Sat', value: 120, target: 100 },
+            { date: 'Sun', value: 118, target: 100 },
+          ]);
+        }
+        
+        // Load meal data
+        fetchMealData();
+        
+        // Just placeholder for activity data for now
+        setActivityData([
+          { date: 'Mon', minutes: 15 },
+          { date: 'Tue', minutes: 30 },
+          { date: 'Wed', minutes: 45 },
+          { date: 'Thu', minutes: 20 },
+          { date: 'Fri', minutes: 35 },
+          { date: 'Sat', minutes: 60 },
+          { date: 'Sun', minutes: 25 },
+        ]);
+        
+      } catch (error) {
+        console.error("Error loading analytics data:", error);
+        toast.error("Error loading analytics data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchGlucoseData();
+  }, [user, timeRange]);
+  
+  // Process glucose data to group by day for charting
+  const processGlucoseDataByDay = (data: GlucoseReading[]) => {
+    const processedData: Record<string, {values: number[], date: string}> = {};
+    
+    // Group readings by day
+    data.forEach(reading => {
+      const date = new Date(reading.reading_time);
+      const day = date.toLocaleDateString('en-US', { weekday: 'short' });
+      const dateKey = date.toISOString().split('T')[0];
+      
+      if (!processedData[dateKey]) {
+        processedData[dateKey] = { values: [], date: day };
+      }
+      
+      processedData[dateKey].values.push(reading.reading_value);
+    });
+    
+    // Calculate average for each day
+    return Object.values(processedData).map(day => ({
+      date: day.date,
+      value: day.values.reduce((sum, val) => sum + val, 0) / day.values.length,
+      target: 100 // Target line
+    })).slice(-7); // Last 7 days
+  };
+  
+  // Fetch meal plan data
+  const fetchMealData = async () => {
+    try {
+      // For now, just use placeholder data
+      // In a real implementation, you would fetch from the database
+      setMealData([
+        { name: 'Carbs', value: 45 },
+        { name: 'Protein', value: 30 },
+        { name: 'Fats', value: 15 },
+        { name: 'Fiber', value: 10 },
+      ]);
+    } catch (error) {
+      console.error("Error fetching meal data:", error);
+    }
+  };
+  
+  // Generate health insights based on glucose data
+  const generateInsights = (data: GlucoseReading[]): HealthInsight[] => {
+    // Default insights if no pattern is detected
+    const defaultInsights: HealthInsight[] = [
+      {
+        title: "Blood Sugar Patterns",
+        description: "Your glucose levels tend to peak after meals. Consider timing your medication appropriately.",
+        icon: Heart
+      },
+      {
+        title: "Nutrition Balance",
+        description: "Your protein intake is below recommended levels. Try incorporating more lean protein sources in your meals.",
+        icon: Apple
+      },
+      {
+        title: "Activity Impact",
+        description: "On days with regular activity, your glucose levels stay within target range more consistently.",
+        icon: Activity
+      },
+      {
+        title: "Meal Timing",
+        description: "Eating regular meals every 4-5 hours appears to help stabilize your glucose levels throughout the day.",
+        icon: Utensils
+      }
+    ];
+    
+    // If we have enough data, try to detect patterns
+    if (data.length > 5) {
+      const mealRelatedReadings = data.filter(reading => reading.meal_related);
+      const nonMealReadings = data.filter(reading => !reading.meal_related);
+      
+      const insights: HealthInsight[] = [];
+      
+      // Check for post-meal spikes
+      if (mealRelatedReadings.length > 0) {
+        const avgMealRelated = mealRelatedReadings.reduce((sum, reading) => sum + reading.reading_value, 0) / mealRelatedReadings.length;
+        const avgNonMeal = nonMealReadings.length > 0 
+          ? nonMealReadings.reduce((sum, reading) => sum + reading.reading_value, 0) / nonMealReadings.length
+          : 0;
+          
+        if (avgMealRelated > avgNonMeal + 30) {
+          insights.push({
+            title: "Post-Meal Glucose Spikes",
+            description: "Your glucose tends to spike significantly after meals. Consider adjusting carbohydrate intake or timing of medication.",
+            icon: Heart
+          });
+        }
+      }
+      
+      // More insights based on patterns could be added here
+      
+      return insights.length > 0 ? insights : defaultInsights;
+    }
+    
+    return defaultInsights;
+  };
+
+  if (isLoading) {
+    return (
+      <MainLayout>
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -155,10 +335,10 @@ const AnalyticsPage = () => {
                   <p>Your meal composition is generally well-balanced, but could benefit from increased protein intake to support muscle maintenance and blood sugar stability.</p>
                   <p>Current macronutrient breakdown:</p>
                   <ul className="list-disc list-inside space-y-1">
-                    <li>Carbohydrates: 45% (Recommendation: 40-45%)</li>
-                    <li>Protein: 30% (Recommendation: 30-35%)</li>
-                    <li>Fats: 15% (Recommendation: 20-25%)</li>
-                    <li>Fiber: 10% (Recommendation: 5-10%)</li>
+                    <li>Carbohydrates: {mealData[0].value}% (Recommendation: 40-45%)</li>
+                    <li>Protein: {mealData[1].value}% (Recommendation: 30-35%)</li>
+                    <li>Fats: {mealData[2].value}% (Recommendation: 20-25%)</li>
+                    <li>Fiber: {mealData[3].value}% (Recommendation: 5-10%)</li>
                   </ul>
                 </div>
               </CardContent>

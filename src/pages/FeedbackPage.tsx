@@ -1,49 +1,58 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MainLayout } from "@/components/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Star } from "lucide-react";
+import { Star, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
-// Mock feedback data - in a real app, this would come from a database
-const mockFeedback = [
-  {
-    id: 1,
-    mealName: "Greek Yogurt with Berries",
-    rating: 5,
-    comment: "Really enjoyed this breakfast. The yogurt was creamy and the berries added just the right amount of sweetness without spiking my blood sugar.",
-    date: "2025-05-09"
-  },
-  {
-    id: 2,
-    mealName: "Grilled Chicken Salad",
-    rating: 4,
-    comment: "Tasty and filling. I added some extra olive oil and it was perfect for lunch.",
-    date: "2025-05-08"
-  },
-  {
-    id: 3,
-    mealName: "Salmon with Steamed Vegetables",
-    rating: 5,
-    comment: "The salmon was delicious and the vegetables were perfectly cooked. This will be a regular in my meal rotation.",
-    date: "2025-05-07"
-  },
-  {
-    id: 4,
-    mealName: "Apple with Almond Butter",
-    rating: 3,
-    comment: "Good snack option but I found the almond butter a bit too thick. Might try a different brand next time.",
-    date: "2025-05-06"
-  }
-];
+interface FeedbackItem {
+  id: number;
+  mealName: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
 
 const FeedbackPage = () => {
+  const { user } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>("history");
   const [generalFeedback, setGeneralFeedback] = useState<string>("");
+  const [rating, setRating] = useState<number>(0);
+  const [feedbackHistory, setFeedbackHistory] = useState<FeedbackItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (!user) return;
+    
+    const fetchFeedbackHistory = async () => {
+      setIsLoading(true);
+      try {
+        // In a real implementation, you'd fetch from your feedback table in Supabase
+        // This is simulating that with a delay
+        setTimeout(() => {
+          // For now, use mock data
+          // In a real app, this would be:
+          // const { data, error } = await supabase.from('meal_feedback').select('*').eq('user_id', user.id);
+          const mockData = localStorage.getItem('feedbackHistory');
+          const parsedData = mockData ? JSON.parse(mockData) : [];
+          setFeedbackHistory(parsedData);
+          setIsLoading(false);
+        }, 800);
+        
+      } catch (error) {
+        console.error("Error fetching feedback history:", error);
+        setIsLoading(false);
+      }
+    };
+    
+    fetchFeedbackHistory();
+  }, [user]);
 
   const handleSubmitFeedback = () => {
     if (generalFeedback.trim().length < 10) {
@@ -54,13 +63,38 @@ const FeedbackPage = () => {
       });
       return;
     }
+    
+    if (rating === 0) {
+      toast({
+        title: "Please add a rating",
+        description: "Select a star rating for your overall experience.",
+        variant: "destructive"
+      });
+      return;
+    }
 
+    // In a real implementation, you'd save to your Supabase table
+    // For now, we'll save to localStorage to demonstrate the functionality
+    const newFeedback: FeedbackItem = {
+      id: Date.now(),
+      mealName: "Overall Experience",
+      rating: rating,
+      comment: generalFeedback,
+      date: new Date().toISOString().split('T')[0]
+    };
+    
+    const updatedFeedback = [newFeedback, ...feedbackHistory];
+    setFeedbackHistory(updatedFeedback);
+    localStorage.setItem('feedbackHistory', JSON.stringify(updatedFeedback));
+    
     toast({
       title: "Feedback Submitted",
       description: "Thank you for your feedback! We appreciate your input.",
     });
     
     setGeneralFeedback("");
+    setRating(0);
+    setActiveTab("history");
   };
 
   // Helper function to render stars based on rating
@@ -86,9 +120,14 @@ const FeedbackPage = () => {
 
           <TabsContent value="history" className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Feedback History</h2>
-            {mockFeedback.length > 0 ? (
+            
+            {isLoading ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : feedbackHistory.length > 0 ? (
               <div className="space-y-4">
-                {mockFeedback.map((item) => (
+                {feedbackHistory.map((item) => (
                   <Card key={item.id} className="overflow-hidden">
                     <CardHeader className="pb-2">
                       <div className="flex justify-between items-start">
@@ -129,8 +168,9 @@ const FeedbackPage = () => {
                           key={star}
                           type="button" 
                           className="p-1 hover:scale-110 transition-transform"
+                          onClick={() => setRating(star)}
                         >
-                          <Star className="w-6 h-6 text-amber-400 hover:fill-amber-400" />
+                          <Star className={`w-6 h-6 ${star <= rating ? 'text-amber-400 fill-amber-400' : 'text-amber-400'}`} />
                         </button>
                       ))}
                     </div>

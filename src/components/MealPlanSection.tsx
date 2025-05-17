@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -68,25 +67,64 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
         diabetesType: profileData.diabetes_type || "Type 2"
       };
       
-      // This would normally call an Edge function or API to generate the meal plan using your Python algorithm
-      // For now, let's simulate a meal plan generation
+      // Call the edge function to generate the meal plan
+      const response = await supabase.functions.invoke('generate-meal-plan', {
+        body: { userData: userInfo }
+      });
       
-      // Mock API call - in a real app this would connect to your Python code via Edge Function
-      setTimeout(() => {
-        const mockMealPlan = generateMockMealPlan(userInfo);
-        setMealPlan(mockMealPlan);
-        setHasGeneratedPlan(true);
-        setIsGenerating(false);
-        
-        toast.success("Meal plan generated successfully", {
-          description: "Your personalized meal plan is ready"
-        });
-        
-      }, 2000);
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+      
+      // Set the meal plan
+      setMealPlan(response.data.mealPlan.dailyPlan);
+      setHasGeneratedPlan(true);
+      
+      // Broadcast nutrient data for other components to use
+      const nutritionTotals = response.data.mealPlan.nutritionTotals;
+      const targetNutrition = response.data.mealPlan.targetNutrition;
+      
+      // Calculate percentages for progress bars
+      const nutrients = {
+        calories: {
+          total: Math.round(nutritionTotals.calories),
+          target: Math.round(targetNutrition.calories),
+          percent: Math.min(Math.round((nutritionTotals.calories / targetNutrition.calories) * 100), 100)
+        },
+        carbs: {
+          total: Math.round(nutritionTotals.carbs),
+          target: Math.round(targetNutrition.carbs),
+          percent: Math.min(Math.round((nutritionTotals.carbs / targetNutrition.carbs) * 100), 100)
+        },
+        protein: {
+          total: Math.round(nutritionTotals.proteins),
+          target: Math.round(targetNutrition.protein),
+          percent: Math.min(Math.round((nutritionTotals.proteins / targetNutrition.protein) * 100), 100)
+        },
+        fat: {
+          total: Math.round(nutritionTotals.fats),
+          target: Math.round(targetNutrition.fat),
+          percent: Math.min(Math.round((nutritionTotals.fats / targetNutrition.fat) * 100), 100)
+        }
+      };
+      
+      // Broadcast the nutrients to other components (like Dashboard)
+      const channel = supabase.channel('custom-update-channel');
+      channel.subscribe();
+      channel.send({
+        type: 'broadcast',
+        event: 'meal-plan-updated',
+        payload: { nutrients }
+      });
+      
+      toast.success("Meal plan generated successfully", {
+        description: "Your personalized meal plan is ready"
+      });
       
     } catch (error) {
       console.error("Error generating meal plan:", error);
       toast.error("Failed to generate meal plan");
+    } finally {
       setIsGenerating(false);
     }
   };
