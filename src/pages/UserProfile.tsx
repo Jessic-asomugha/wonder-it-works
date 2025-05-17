@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { MainLayout } from "@/components/MainLayout";
-import { UserProfileHeader } from "@/components/UserProfileHeader";
+import UserProfileHeader from "@/components/UserProfileHeader";
 import { UserProfileForm } from "@/components/UserProfileForm";
 import { UserSettingsForm } from "@/components/UserSettingsForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -124,13 +124,7 @@ const UserProfile = () => {
 
   return (
     <MainLayout>
-      <UserProfileHeader
-        name={userData.name || "User"}
-        avatar={userData.avatar_url || "/placeholder.svg"}
-        email={userData.email || ""}
-        diabetes_type={userData.diabetes_type || "Type 2"}
-        joined={userData.date_joined ? new Date(userData.date_joined).toLocaleDateString() : "Recently"}
-      />
+      <UserProfileHeader />
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
         <TabsList className="grid w-full max-w-md grid-cols-2">
@@ -141,7 +135,6 @@ const UserProfile = () => {
         <TabsContent value="profile" className="mt-6">
           <Card>
             <UserProfileForm 
-              userData={userData}
               onSubmit={handleUpdateProfile}
             />
           </Card>
@@ -149,10 +142,7 @@ const UserProfile = () => {
         
         <TabsContent value="settings" className="mt-6">
           <Card>
-            <UserSettingsForm
-              userData={userData}
-              diabetes_type={userData.diabetes_type}
-            />
+            <UserSettingsForm />
           </Card>
         </TabsContent>
       </Tabs>

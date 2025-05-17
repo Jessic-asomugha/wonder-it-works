@@ -19,6 +19,7 @@ interface AuthContextProps {
   signOut: () => Promise<{ error: Error | null }>;
   updateProfile: (data: any) => Promise<{ error: Error | null; data: any }>;
   getUserProfile: () => Promise<any>;
+  updateUserProfile: (data: any) => Promise<{ error: Error | null; data: any }>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -103,6 +104,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error, data: updatedData };
   };
 
+  // Add updateUserProfile as an alias for updateProfile for backward compatibility
+  const updateUserProfile = updateProfile;
+
   const getUserProfile = async () => {
     if (!user) {
       return { error: new Error('Not authenticated'), data: null };
@@ -125,7 +129,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp,
     signOut,
     updateProfile,
-    getUserProfile
+    getUserProfile,
+    updateUserProfile
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

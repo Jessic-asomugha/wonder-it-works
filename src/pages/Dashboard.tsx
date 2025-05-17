@@ -24,6 +24,7 @@ const Dashboard = () => {
     height: 0,
     weight: 0,
     diabetes_type: "",
+    diabetesType: "", // Added this to match the expected prop type
     calorieTarget: 2000,
     gender: "male",
     budget: {
@@ -59,6 +60,7 @@ const Dashboard = () => {
             height: data.height || 170,
             weight: data.weight || 70,
             diabetes_type: data.diabetes_type || "Type 2",
+            diabetesType: data.diabetes_type || "Type 2", // Set both properties to match
             calorieTarget: data.max_calories || 2000,
             gender: data.gender || "male",
             budget: {
