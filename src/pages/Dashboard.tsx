@@ -39,6 +39,10 @@ const Dashboard = () => {
     fat: { total: 0, target: 60, percent: 0 }
   });
   const [mealPlanGenerated, setMealPlanGenerated] = useState(false);
+  const [todayProgress, setTodayProgress] = useState({
+    steps: { current: 6240, target: 10000, percent: 62 },
+    water: { current: 1.2, target: 2, percent: 60 }
+  });
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -79,14 +83,29 @@ const Dashboard = () => {
     loadUserData();
   }, [user, getUserProfile]);
 
+  // Check for saved meal plan on component mount
+  useEffect(() => {
+    const savedMealPlan = localStorage.getItem('currentMealPlan');
+    if (savedMealPlan) {
+      try {
+        const parsedPlan = JSON.parse(savedMealPlan);
+        if (parsedPlan.nutrients) {
+          setNutrientData(parsedPlan.nutrients);
+          setMealPlanGenerated(true);
+        }
+      } catch (error) {
+        console.error("Error loading saved meal plan nutrients:", error);
+      }
+    }
+  }, []);
+
   // Add a new effect to listen for mealPlan changes
   useEffect(() => {
-    const fetchMealPlanNutrients = async () => {
+    const setupMealPlanListener = async () => {
       if (!user) return;
       
       try {
-        // This is just a placeholder. The actual nutrient data will come from the MealPlanSection component.
-        // We'll create a proper state management solution in a future update.
+        // Subscribe to meal plan updates
         const channel = supabase
           .channel('custom-update-channel')
           .on('broadcast', { event: 'meal-plan-updated' }, (payload) => {
@@ -106,7 +125,7 @@ const Dashboard = () => {
       }
     };
     
-    fetchMealPlanNutrients();
+    setupMealPlanListener();
   }, [user]);
 
   if (isLoading) {
@@ -172,10 +191,12 @@ const Dashboard = () => {
                   Log Glucose Level
                 </Button>
               </Link>
-              <Button variant="outline" className="w-full justify-start text-sm h-9">
-                <PlusCircle className="h-3.5 w-3.5 mr-2 text-primary" />
-                Add Meal
-              </Button>
+              <Link to="/meal-detail/new">
+                <Button variant="outline" className="w-full justify-start text-sm h-9">
+                  <PlusCircle className="h-3.5 w-3.5 mr-2 text-primary" />
+                  Add Meal
+                </Button>
+              </Link>
               <Button variant="outline" className="w-full justify-start text-sm h-9">
                 <PlusCircle className="h-3.5 w-3.5 mr-2 text-primary" />
                 Log Water Intake
@@ -201,7 +222,7 @@ const Dashboard = () => {
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
                   <div 
                     className="bg-primary h-1.5 rounded-full" 
-                    style={{ width: `${mealPlanGenerated ? nutrientData.calories.percent : 65}%` }}
+                    style={{ width: `${mealPlanGenerated ? nutrientData.calories.percent : 0}%` }}
                   ></div>
                 </div>
               </div>
@@ -212,13 +233,13 @@ const Dashboard = () => {
                   <span className="font-medium">
                     {mealPlanGenerated ? 
                       `${nutrientData.carbs.total}g / ${nutrientData.carbs.target}g` : 
-                      "200g"}
+                      "0g / 200g"}
                   </span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
                   <div 
                     className="bg-blue-400 h-1.5 rounded-full" 
-                    style={{ width: `${mealPlanGenerated ? nutrientData.carbs.percent : 40}%` }}
+                    style={{ width: `${mealPlanGenerated ? nutrientData.carbs.percent : 0}%` }}
                   ></div>
                 </div>
               </div>
@@ -229,13 +250,13 @@ const Dashboard = () => {
                   <span className="font-medium">
                     {mealPlanGenerated ? 
                       `${nutrientData.protein.total}g / ${nutrientData.protein.target}g` : 
-                      "100g"}
+                      "0g / 100g"}
                   </span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
                   <div 
                     className="bg-amber-400 h-1.5 rounded-full" 
-                    style={{ width: `${mealPlanGenerated ? nutrientData.protein.percent : 75}%` }}
+                    style={{ width: `${mealPlanGenerated ? nutrientData.protein.percent : 0}%` }}
                   ></div>
                 </div>
               </div>
@@ -246,13 +267,13 @@ const Dashboard = () => {
                   <span className="font-medium">
                     {mealPlanGenerated ? 
                       `${nutrientData.fat.total}g / ${nutrientData.fat.target}g` : 
-                      "60g"}
+                      "0g / 60g"}
                   </span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
                   <div 
                     className="bg-rose-400 h-1.5 rounded-full" 
-                    style={{ width: `${mealPlanGenerated ? nutrientData.fat.percent : 50}%` }}
+                    style={{ width: `${mealPlanGenerated ? nutrientData.fat.percent : 0}%` }}
                   ></div>
                 </div>
               </div>
@@ -274,18 +295,18 @@ const Dashboard = () => {
               <div className="space-y-3 py-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-slate-600">Steps</span>
-                  <span className="text-sm font-medium">6,240 / 10,000</span>
+                  <span className="text-sm font-medium">{todayProgress.steps.current} / {todayProgress.steps.target}</span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
-                  <div className="bg-green-400 h-1.5 rounded-full" style={{ width: "62%" }}></div>
+                  <div className="bg-green-400 h-1.5 rounded-full" style={{ width: `${todayProgress.steps.percent}%` }}></div>
                 </div>
 
                 <div className="flex items-center justify-between mt-4">
                   <span className="text-sm text-slate-600">Water</span>
-                  <span className="text-sm font-medium">1.2L / 2L</span>
+                  <span className="text-sm font-medium">{todayProgress.water.current}L / {todayProgress.water.target}L</span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
-                  <div className="bg-blue-400 h-1.5 rounded-full" style={{ width: "60%" }}></div>
+                  <div className="bg-blue-400 h-1.5 rounded-full" style={{ width: `${todayProgress.water.percent}%` }}></div>
                 </div>
               </div>
             </CardContent>

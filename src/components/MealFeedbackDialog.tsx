@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface MealFeedbackDialogProps {
   isOpen: boolean;
@@ -34,8 +36,9 @@ export function MealFeedbackDialog({
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const { toast } = useToast();
+  const { user } = useAuth();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (rating === 0) {
       toast({
         title: "Please add a rating",
@@ -45,6 +48,11 @@ export function MealFeedbackDialog({
       return;
     }
     
+    // Current date and time
+    const now = new Date();
+    const dateString = now.toISOString().split('T')[0];
+    const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    
     // In a real app, this would send data to a backend
     console.log("Submitting feedback:", {
       mealId,
@@ -53,13 +61,27 @@ export function MealFeedbackDialog({
       comment,
     });
 
+    // Create meal log entry with feedback
+    const meal = {
+      id: mealId || Date.now().toString(),
+      name: mealName,
+      date: dateString,
+      time: timeString,
+      calories: Math.floor(Math.random() * 300) + 200, // Placeholder calories
+      hasFeedback: true,
+      rating,
+      comment,
+      userId: user?.id
+    };
+    
     // Save to feedback history
     const feedback = {
       id: Date.now(),
       mealName,
       rating,
       comment,
-      date: new Date().toISOString().split('T')[0]
+      date: dateString,
+      userId: user?.id
     };
     
     const existingFeedback = localStorage.getItem('feedbackHistory');
@@ -67,23 +89,20 @@ export function MealFeedbackDialog({
     feedbackHistory.unshift(feedback);
     localStorage.setItem('feedbackHistory', JSON.stringify(feedbackHistory));
     
-    // Update the logged meal in localStorage to indicate it has feedback
+    // Save to logged meals
     const savedMeals = localStorage.getItem('loggedMeals');
-    if (savedMeals) {
-      const meals = JSON.parse(savedMeals);
-      const updatedMeals = meals.map((meal: any) => {
-        if (meal && meal.id === mealId) {
-          return {
-            ...meal,
-            hasFeedback: true,
-            rating,
-            comment
-          };
-        }
-        return meal;
-      });
-      localStorage.setItem('loggedMeals', JSON.stringify(updatedMeals));
-    }
+    const loggedMeals = savedMeals ? JSON.parse(savedMeals) : [];
+    loggedMeals.unshift(meal);
+    localStorage.setItem('loggedMeals', JSON.stringify(loggedMeals));
+    
+    // Update the meal plan in localStorage to persist it
+    const channel = supabase.channel('custom-update-channel');
+    channel.subscribe();
+    channel.send({
+      type: 'broadcast',
+      event: 'meal-logged',
+      payload: { meal }
+    });
 
     toast({
       title: "Feedback submitted",
@@ -102,10 +121,35 @@ export function MealFeedbackDialog({
 
   const handleLogOnly = () => {
     // Just log the meal without feedback
-    console.log("Logged meal without feedback:", {
-      mealId,
-      mealName,
+    const now = new Date();
+    const dateString = now.toISOString().split('T')[0];
+    const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    
+    const meal = {
+      id: mealId || Date.now().toString(),
+      name: mealName,
+      date: dateString,
+      time: timeString,
+      calories: Math.floor(Math.random() * 300) + 200, // Placeholder calories
+      hasFeedback: false,
+      userId: user?.id
+    };
+    
+    const savedMeals = localStorage.getItem('loggedMeals');
+    const loggedMeals = savedMeals ? JSON.parse(savedMeals) : [];
+    loggedMeals.unshift(meal);
+    localStorage.setItem('loggedMeals', JSON.stringify(loggedMeals));
+    
+    // Broadcast the logged meal
+    const channel = supabase.channel('custom-update-channel');
+    channel.subscribe();
+    channel.send({
+      type: 'broadcast',
+      event: 'meal-logged',
+      payload: { meal }
     });
+
+    console.log("Logged meal without feedback:", meal);
 
     toast({
       title: "Meal logged",
@@ -203,4 +247,4 @@ export function MealFeedbackDialog({
       </DialogContent>
     </Dialog>
   );
-};
+}

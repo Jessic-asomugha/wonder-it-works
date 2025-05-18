@@ -1,48 +1,115 @@
 
-import { ArrowLeft, Camera } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from 'react';
+import { useAuth } from "@/hooks/useAuth";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ProfilePictureUploader } from './ProfilePictureUploader';
 
-const UserProfileHeader = () => {
-  const navigate = useNavigate();
-  
-  return (
-    <div className="flex flex-col items-center">
-      <div className="w-full flex justify-start mb-6">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate('/dashboard')}
-          className="flex items-center gap-1 text-slate-600 hover:text-slate-900"
-        >
-          <ArrowLeft size={18} />
-          Back to Dashboard
-        </Button>
-      </div>
+export default function UserProfileHeader() {
+  const { user, getUserProfile, updateProfile } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState({
+    name: "",
+    username: "",
+    avatar_url: "",
+    date_joined: ""
+  });
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (!user) return;
       
-      <div className="flex flex-col items-center gap-6">
-        <div className="relative">
-          <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
-            <AvatarImage src="/placeholder.svg" alt="Profile" className="object-cover" />
-            <AvatarFallback className="bg-primary/20 text-primary text-2xl">DP</AvatarFallback>
-          </Avatar>
-          <Button 
-            size="icon"
-            variant="secondary" 
-            className="absolute bottom-0 right-0 rounded-full shadow-md h-10 w-10"
-          >
-            <Camera size={16} />
-          </Button>
+      try {
+        setIsLoading(true);
+        const { data, error } = await getUserProfile();
+        
+        if (error) {
+          console.error("Error loading user profile:", error);
+          return;
+        }
+        
+        if (data) {
+          setUserData({
+            name: data.name || user.email?.split('@')[0] || "User",
+            username: data.username || "",
+            avatar_url: data.avatar_url || "",
+            date_joined: data.date_joined 
+              ? new Date(data.date_joined).toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })
+              : new Date().toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadUserData();
+  }, [user, getUserProfile]);
+  
+  const handleAvatarUpdate = async (url: string) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await updateProfile({ avatar_url: url });
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      // Update local state
+      setUserData(prev => ({
+        ...prev,
+        avatar_url: url
+      }));
+      
+      return Promise.resolve();
+    } catch (error) {
+      console.error("Error updating avatar:", error);
+      return Promise.reject(error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="bg-slate-50 p-6 rounded-lg border border-slate-200 mb-6">
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          <Skeleton className="w-24 h-24 rounded-full" />
+          <div className="space-y-2 text-center md:text-left">
+            <Skeleton className="h-7 w-40" />
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-4 w-48" />
+          </div>
         </div>
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-slate-800">Your Profile</h1>
-          <p className="text-slate-500 mt-1">
-            Manage your personal information and preferences
-          </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-slate-50 p-6 rounded-lg border border-slate-200 mb-6">
+      <div className="flex flex-col md:flex-row items-center gap-6">
+        <ProfilePictureUploader 
+          currentAvatarUrl={userData.avatar_url}
+          userName={userData.name}
+          onAvatarUpdate={handleAvatarUpdate}
+        />
+        
+        <div className="space-y-1 text-center md:text-left">
+          <h1 className="text-xl font-semibold">{userData.name || "User"}</h1>
+          {userData.username && (
+            <p className="text-slate-500">@{userData.username}</p>
+          )}
+          <p className="text-sm text-slate-400">Member since {userData.date_joined}</p>
         </div>
       </div>
     </div>
   );
-};
-
-export default UserProfileHeader;
+}

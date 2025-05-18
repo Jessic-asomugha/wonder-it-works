@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Utensils, ArrowRight, Loader2 } from "lucide-react";
@@ -32,6 +33,31 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasGeneratedPlan, setHasGeneratedPlan] = useState(false);
   const { user, getUserProfile } = useAuth();
+  
+  // Load saved meal plan on component mount
+  useEffect(() => {
+    const savedMealPlan = localStorage.getItem('currentMealPlan');
+    if (savedMealPlan) {
+      try {
+        const parsedPlan = JSON.parse(savedMealPlan);
+        setMealPlan(parsedPlan.mealPlan || []);
+        setHasGeneratedPlan(true);
+        
+        // Also broadcast nutrient data to update the dashboard
+        if (parsedPlan.nutrients) {
+          const channel = supabase.channel('custom-update-channel');
+          channel.subscribe();
+          channel.send({
+            type: 'broadcast',
+            event: 'meal-plan-updated',
+            payload: { nutrients: parsedPlan.nutrients }
+          });
+        }
+      } catch (error) {
+        console.error("Error loading saved meal plan:", error);
+      }
+    }
+  }, []);
   
   // Function to handle meal logging with feedback
   const handleLogMeal = (mealType: string, dishId: string, dishName: string) => {
@@ -67,22 +93,20 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
         diabetesType: profileData.diabetes_type || "Type 2"
       };
       
-      // Call the edge function to generate the meal plan
-      const response = await supabase.functions.invoke('generate-meal-plan', {
-        body: { userData: userInfo }
-      });
-      
-      if (response.error) {
-        throw new Error(response.error.message);
-      }
-      
-      // Set the meal plan
-      setMealPlan(response.data.mealPlan.dailyPlan);
+      // For now, we'll use the mock function instead of calling the edge function
+      // This would be replaced with the actual edge function call in production
+      const mockPlan = generateMockMealPlan(userInfo);
+      setMealPlan(mockPlan);
       setHasGeneratedPlan(true);
       
-      // Broadcast nutrient data for other components to use
-      const nutritionTotals = response.data.mealPlan.nutritionTotals;
-      const targetNutrition = response.data.mealPlan.targetNutrition;
+      // Calculate nutrient totals
+      const nutritionTotals = calculateNutritionTotals(mockPlan);
+      const targetNutrition = {
+        calories: userInfo.calorieLimit,
+        carbs: Math.round(userInfo.calorieLimit * 0.5 / 4), // 50% calories from carbs
+        protein: Math.round(userInfo.calorieLimit * 0.2 / 4), // 20% calories from protein
+        fat: Math.round(userInfo.calorieLimit * 0.3 / 9) // 30% calories from fat
+      };
       
       // Calculate percentages for progress bars
       const nutrients = {
@@ -108,6 +132,13 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
         }
       };
       
+      // Save the meal plan and nutrients to localStorage for persistence
+      localStorage.setItem('currentMealPlan', JSON.stringify({
+        mealPlan: mockPlan,
+        nutrients: nutrients,
+        date: new Date().toISOString().split('T')[0]
+      }));
+      
       // Broadcast the nutrients to other components (like Dashboard)
       const channel = supabase.channel('custom-update-channel');
       channel.subscribe();
@@ -127,6 +158,29 @@ export const MealPlanSection = ({ userData }: MealPlanSectionProps) => {
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  // Helper function to calculate nutrition totals from meal plan
+  const calculateNutritionTotals = (mealPlan: any[]) => {
+    const totals = {
+      calories: 0,
+      carbs: 0,
+      proteins: 0,
+      fats: 0,
+      fiber: 0
+    };
+    
+    mealPlan.forEach(meal => {
+      meal.dishes.forEach((dish: any) => {
+        totals.calories += dish.calories || 0;
+        totals.carbs += dish.carbs || 0;
+        totals.proteins += dish.proteins || 0;
+        totals.fats += dish.fats || 0;
+        totals.fiber += dish.fiber || 0;
+      });
+    });
+    
+    return totals;
   };
 
   // Mock meal plan generator function - this would be replaced with your actual algorithm

@@ -18,6 +18,7 @@ interface LoggedMeal {
   time: string;
   calories: number;
   hasFeedback: boolean;
+  userId?: string;
   rating?: number;
   comment?: string;
 }
@@ -38,6 +39,30 @@ const ActivityPage = () => {
   const [glucoseReadings, setGlucoseReadings] = useState<GlucoseReading[]>([]);
   const [isLoadingMeals, setIsLoadingMeals] = useState(true);
   const [isLoadingReadings, setIsLoadingReadings] = useState(true);
+  
+  // Set up a listener for new logged meals
+  useEffect(() => {
+    const mealLogListener = supabase
+      .channel('custom-update-channel')
+      .on('broadcast', { event: 'meal-logged' }, (payload) => {
+        if (payload.payload && payload.payload.meal) {
+          const meal = payload.payload.meal;
+          setLoggedMeals(prev => {
+            // Check if meal already exists
+            const exists = prev.some(m => m.id === meal.id);
+            if (!exists) {
+              return [meal, ...prev];
+            }
+            return prev;
+          });
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(mealLogListener);
+    };
+  }, []);
   
   // Fetch user's meals and glucose readings from Supabase
   useEffect(() => {
@@ -78,7 +103,12 @@ const ActivityPage = () => {
         const savedMeals = localStorage.getItem('loggedMeals');
         if (savedMeals) {
           const parsedMeals = JSON.parse(savedMeals);
-          setLoggedMeals(parsedMeals.filter((meal: LoggedMeal) => meal !== null));
+          // Filter out null values and meals that don't belong to the current user
+          const userMeals = parsedMeals
+            .filter((meal: LoggedMeal | null) => meal !== null)
+            .filter((meal: LoggedMeal) => !meal.userId || meal.userId === user.id);
+          
+          setLoggedMeals(userMeals);
         }
       } catch (error) {
         console.error("Error fetching user activity data:", error);
@@ -94,40 +124,6 @@ const ActivityPage = () => {
   const handleProvideFeedback = (mealId: string, mealName: string) => {
     setCurrentMeal({ id: mealId, name: mealName });
     setFeedbackDialogOpen(true);
-  };
-  
-  const handleSubmitFeedback = (rating: number, comment: string) => {
-    // Update the meal in localStorage with feedback
-    const updatedMeals = loggedMeals.map(meal => {
-      if (meal.id === currentMeal.id) {
-        return {
-          ...meal,
-          hasFeedback: true,
-          rating,
-          comment
-        };
-      }
-      return meal;
-    });
-    
-    setLoggedMeals(updatedMeals);
-    localStorage.setItem('loggedMeals', JSON.stringify(updatedMeals));
-    
-    // Also save to feedbackHistory for the Feedback page
-    const feedback = {
-      id: Date.now(),
-      mealName: currentMeal.name,
-      rating,
-      comment,
-      date: new Date().toISOString().split('T')[0]
-    };
-    
-    const existingFeedback = localStorage.getItem('feedbackHistory');
-    const feedbackHistory = existingFeedback ? JSON.parse(existingFeedback) : [];
-    feedbackHistory.unshift(feedback);
-    localStorage.setItem('feedbackHistory', JSON.stringify(feedbackHistory));
-    
-    setFeedbackDialogOpen(false);
   };
 
   return (
@@ -301,7 +297,6 @@ const ActivityPage = () => {
         mealId={currentMeal.id}
         mealName={currentMeal.name}
         initialStep="feedback"
-        onLogOnly={() => {}}
       />
     </MainLayout>
   );
